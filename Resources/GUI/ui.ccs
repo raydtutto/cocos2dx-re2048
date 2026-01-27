@@ -1,0 +1,29 @@
+<Solution>
+  <PropertyGroup Name="ui" Version="3.10.0.0" Type="CocosStudio" />
+  <SolutionFolder>
+    <Group ctype="ResourceGroup">
+      <RootFolder Name=".">
+        <Folder Name="img">
+          <Image Name="tile0.png" />
+          <Image Name="tile1024.png" />
+          <Image Name="tile128.png" />
+          <Image Name="tile16.png" />
+          <Image Name="tile2.png" />
+          <Image Name="tile2048.png" />
+          <Image Name="tile256.png" />
+          <Image Name="tile32.png" />
+          <Image Name="tile4.png" />
+          <Image Name="tile4096.png" />
+          <Image Name="tile512.png" />
+          <Image Name="tile64.png" />
+          <Image Name="tile8.png" />
+        </Folder>
+        <Folder Name="widgets">
+          <Project Name="gameplayScene.csd" Type="Layer" />
+          <Project Name="tile.csd" Type="Layer" />
+        </Folder>
+        <TTF Name="Marker Felt.ttf" />
+      </RootFolder>
+    </Group>
+  </SolutionFolder>
+</Solution>
