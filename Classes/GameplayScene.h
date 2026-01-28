@@ -1,14 +1,15 @@
-#ifndef __HELLOWORLD_SCENE_H__
-#define __HELLOWORLD_SCENE_H__
+#ifndef COCOS2DX_RE2048_GAMEPLAYSCENE_H
+#define COCOS2DX_RE2048_GAMEPLAYSCENE_H
+
 
 #include "cocos2d.h"
 
-class HelloWorld : public cocos2d::Scene
+class GameplayScene : public cocos2d::Scene
 {
 public:
     // implement the "static create()" method manually
-    static HelloWorld *create() {
-        HelloWorld *pRet = new(std::nothrow) HelloWorld();
+    static GameplayScene *create() {
+        GameplayScene *pRet = new(std::nothrow) GameplayScene();
         if (pRet && pRet->init()) {
             pRet->autorelease();
             return pRet;
@@ -19,7 +20,7 @@ public:
         }
     }
     virtual bool init();
-
 };
 
-#endif // __HELLOWORLD_SCENE_H__
+
+#endif //COCOS2DX_RE2048_GAMEPLAYSCENE_H
