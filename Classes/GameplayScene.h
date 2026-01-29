@@ -20,6 +20,10 @@ public:
         }
     }
     virtual bool init();
+
+private:
+    cocos2d::Node* mRoot{nullptr};
+    cocos2d::Node* mBoard{nullptr};
 };
 
 
