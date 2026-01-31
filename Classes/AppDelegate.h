@@ -58,6 +58,8 @@ public:
     @param  the pointer of the application
     */
     virtual void applicationWillEnterForeground();
+
+    virtual void applicationChangeDesignResolution();
 };
 
 #endif // _APP_DELEGATE_H_

@@ -33,7 +33,8 @@
 
 USING_NS_CC;
 
-static cocos2d::Size designResolutionSize = cocos2d::Size(768, 1024);
+static cocos2d::Size designResolutionSizeS = cocos2d::Size(640, 960);
+static cocos2d::Size designResolutionSizeM = cocos2d::Size(768, 1024);
 
 AppDelegate::AppDelegate()
 {
@@ -64,9 +65,9 @@ bool AppDelegate::applicationDidFinishLaunching() {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) || (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
         // auto testDesignResolutionSize = cocos2d::Size(768, 1024);
         // auto samsungFoldDesignResolutionSize = cocos2d::Size(1024, 1024);
-        glview = GLViewImpl::createWithRect("RE2048", cocos2d::Rect(0, 0, designResolutionSize.width, designResolutionSize.height));
+        glview = GLViewImpl::createWithRect("RE2048", cocos2d::Rect(0, 0, designResolutionSizeM.width, designResolutionSizeM.height));
 #else
-        glview = GLViewImpl::create("RE2048"); // fullsceen
+        glview = GLViewImpl::create("RE2048"); // fullscreen
 #endif
         director->setOpenGLView(glview);
     }
@@ -78,7 +79,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     director->setAnimationInterval(1.0f / 60);
 
     // Set the design resolution
-    glview->setDesignResolutionSize(designResolutionSize.width, designResolutionSize.height, ResolutionPolicy::FIXED_WIDTH);
+    glview->setDesignResolutionSize(designResolutionSizeM.width, designResolutionSizeM.height, ResolutionPolicy::FIXED_WIDTH);
     /*auto frameSize = glview->getFrameSize();
     if (frameSize.height > mediumResolutionSize.height)
     {        
@@ -120,4 +121,8 @@ void AppDelegate::applicationWillEnterForeground() {
 #if USE_AUDIO_ENGINE
     AudioEngine::resumeAll();
 #endif
+}
+
+void AppDelegate::applicationChangeDesignResolution() {
+    //
 }
