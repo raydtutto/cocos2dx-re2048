@@ -17,18 +17,13 @@ bool GameplayScene::init() {
     const auto layerColor = LayerColor::create(colorBg);
     addChild(layerColor);
 
-    mRoot = CSLoader::createNode("GUI/cocosstudio/widgets/gameplayScene.csb");
+    mRoot = CSLoader::createNodeWithVisibleSize("GUI/cocosstudio/widgets/gameplayScene.csb");
     if (mRoot) {
         addChild(mRoot);
     }
     else {
         return false;
     }
-
-    auto rootSize = mRoot->getContentSize();
-    auto dirSize = Director::getInstance()->getVisibleSize();
-
-    // mRoot->setContentSize();
 
     if (auto gameboard = NodeUtils::getNodeByName(mRoot, "gameboard")) {
         auto visibleSize = gameboard->getContentSize();

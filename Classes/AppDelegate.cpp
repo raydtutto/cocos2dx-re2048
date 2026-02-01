@@ -34,9 +34,6 @@
 
 USING_NS_CC;
 
-static cocos2d::Size designResolutionSizeS = cocos2d::Size(640, 960);
-static cocos2d::Size designResolutionSizeM = cocos2d::Size(768, 1024);
-
 AppDelegate::AppDelegate()
 {
 }
@@ -62,11 +59,14 @@ bool AppDelegate::applicationDidFinishLaunching() {
     // initialize director
     auto director = Director::getInstance();
     auto glview = director->getOpenGLView();
+
+    // cocos2d::Size designResolutionSize = cocos2d::Size(640, 960); // S
+    cocos2d::Size designResolutionSize = cocos2d::Size(768, 1024); // M
+    // cocos2d::Size designResolutionSize = cocos2d::Size(1024, 1024); // L
+
     if(!glview) {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) || (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
-        // auto testDesignResolutionSize = cocos2d::Size(768, 1024);
-        // auto samsungFoldDesignResolutionSize = cocos2d::Size(1024, 1024);
-        glview = GLViewImpl::createWithRect("RE2048", cocos2d::Rect(0, 0, designResolutionSizeM.width, designResolutionSizeS.height));
+        glview = GLViewImpl::createWithRect("RE2048", cocos2d::Rect(0, 0, designResolutionSize.width, designResolutionSize.height));
 #else
         glview = GLViewImpl::create("RE2048"); // fullscreen
 #endif
@@ -80,7 +80,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     director->setAnimationInterval(1.0f / 60);
 
     // Set the design resolution
-    glview->setDesignResolutionSize(designResolutionSizeS.width, designResolutionSizeS.height, ResolutionPolicy::FIXED_WIDTH);
+    glview->setDesignResolutionSize(designResolutionSize.width, designResolutionSize.height, ResolutionPolicy::FIXED_WIDTH);
     /*auto frameSize = glview->getFrameSize();
     if (frameSize.height > mediumResolutionSize.height)
     {        
