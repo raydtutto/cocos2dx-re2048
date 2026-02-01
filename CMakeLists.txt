@@ -47,6 +47,9 @@ endif()
 set(GAME_SOURCE)
 set(GAME_HEADER)
 
+# cocos2d-debug draw submodule
+add_subdirectory(Classes/cocos2d_debug)
+
 set(GAME_RES_FOLDER
     "${CMAKE_CURRENT_SOURCE_DIR}/Resources"
     )
@@ -131,7 +134,8 @@ else()
     target_link_libraries(${APP_NAME} -Wl,--whole-archive cpp_android_spec -Wl,--no-whole-archive)
 endif()
 
-target_link_libraries(${APP_NAME} cocos2d)
+initDebugModule()
+target_link_libraries(${APP_NAME} cocos2d ${GENERIC_LIB})
 target_include_directories(${APP_NAME}
         PRIVATE Classes
         PRIVATE ${COCOS2DX_ROOT_PATH}/cocos/audio/include/

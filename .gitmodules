@@ -1,0 +1,3 @@
+[submodule "Classes/cocos2d_debug"]
+	path = Classes/cocos2d_debug
+	url = git@github.com:efreyu-learning-hub/cocos2d_debug.git

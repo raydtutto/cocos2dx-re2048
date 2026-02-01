@@ -25,8 +25,10 @@ bool GameplayScene::init() {
         return false;
     }
 
-    // auto rootSize = mRoot->getContentSize();
-    // auto dirSize = Director::getInstance()->getVisibleSize();
+    auto rootSize = mRoot->getContentSize();
+    auto dirSize = Director::getInstance()->getVisibleSize();
+
+    // mRoot->setContentSize();
 
     if (auto gameboard = NodeUtils::getNodeByName(mRoot, "gameboard")) {
         auto visibleSize = gameboard->getContentSize();
