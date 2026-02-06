@@ -50,6 +50,25 @@ set(GAME_HEADER)
 # cocos2d-debug draw submodule
 add_subdirectory(Classes/cocos2d_debug)
 
+function(add_game_sources BASE_DIR)
+    file(GLOB_RECURSE GAME_SRC_FILES
+            CONFIGURE_DEPENDS
+            ${BASE_DIR}/*.cpp
+            ${BASE_DIR}/*.c
+    )
+    file(GLOB_RECURSE GAME_HDR_FILES
+            CONFIGURE_DEPENDS
+            ${BASE_DIR}/*.h
+            ${BASE_DIR}/*.hpp
+    )
+
+    list(APPEND GAME_SOURCE ${GAME_SRC_FILES})
+    list(APPEND GAME_HEADER ${GAME_HDR_FILES})
+
+    set(GAME_SOURCE ${GAME_SOURCE} PARENT_SCOPE)
+    set(GAME_HEADER ${GAME_HEADER} PARENT_SCOPE)
+endfunction()
+
 set(GAME_RES_FOLDER
     "${CMAKE_CURRENT_SOURCE_DIR}/Resources"
     )
@@ -60,14 +79,13 @@ endif()
 # add cross-platforms source files and header files 
 list(APPEND GAME_SOURCE
      Classes/AppDelegate.cpp
-     Classes/GameplayScene.cpp
-     Classes/utils/NodeUtils.cpp
      )
 list(APPEND GAME_HEADER
      Classes/AppDelegate.h
-     Classes/GameplayScene.h
-     Classes/utils/NodeUtils.h
      )
+add_game_sources(Classes/gameplay)
+add_game_sources(Classes/utils)
+#message(FATAL_ERROR ${GAME_HEADER})
 
 if(ANDROID)
     # change APP_NAME to the share library name for Android, it's value depend on AndroidManifest.xml

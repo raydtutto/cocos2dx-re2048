@@ -23,7 +23,7 @@
  ****************************************************************************/
 
 #include "AppDelegate.h"
-#include "GameplayScene.h"
+#include "gameplay/GameplayScene.h"
 #include "cocos2d_debug/imgui_debug_layer.h"
 
 // #define USE_AUDIO_ENGINE 1

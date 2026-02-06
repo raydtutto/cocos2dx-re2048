@@ -4,8 +4,10 @@
 
 #include "cocos2d.h"
 
-class GameplayScene : public cocos2d::Scene
-{
+// forward
+class TileWidget;
+
+class GameplayScene : public cocos2d::Scene {
 public:
     // implement the "static create()" method manually
     static GameplayScene *create() {
@@ -19,11 +21,17 @@ public:
             return nullptr;
         }
     }
-    virtual bool init();
+    bool init() override;
 
 private:
+    std::pair<int, int> getRandomPos();
+    void generateTile();
+
     cocos2d::Node* mRoot{nullptr};
     cocos2d::Node* mBoard{nullptr};
+    std::map<std::pair<int, int>, TileWidget*> mTileGrid;
+    cocos2d::EventListenerTouchOneByOne* mTouchListener = nullptr;
+
 };
 
 
