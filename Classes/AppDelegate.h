@@ -32,6 +32,8 @@
 
 Private inheritance here hides part of interface from Director.
 */
+
+// AppDelegate - Main application (1. game initialization. 2. launching, 3. game on background/on foreground)
 class  AppDelegate : private cocos2d::Application
 {
 public:

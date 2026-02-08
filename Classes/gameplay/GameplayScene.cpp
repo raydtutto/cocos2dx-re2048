@@ -10,6 +10,7 @@ using namespace cocos2d;
 
 namespace {
     const std::pair<int, int> gridSize{4, 4};
+    auto touchSwipeThreshold = 70.f;
 }
 
 bool GameplayScene::init() {
@@ -43,34 +44,52 @@ bool GameplayScene::init() {
         return false;
     }
 
-    // Event listener
-    mTouchListener = EventListenerTouchOneByOne::create(); // Create event listener
-    if (mTouchListener) {
-        // Push down trigger
-        mTouchListener->onTouchBegan = [](Touch* touch, Event* event){
-            log("Touch BEGAN");
-            return true;
-        };
-
-        // Moving touch trigger
-        mTouchListener->onTouchMoved = [](Touch* touch, Event* event){
-            log("      moved");
-        };
-
-        // Let up trigger
-        mTouchListener->onTouchEnded = [=](Touch* touch, Event* event){
-            log("Touch ENDED");
-        };
-
-        Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(mTouchListener, this); // Add listener
-        log("Event listener created.");
-    }
-
     // Tiles
     generateTile();
     generateTile();
 
+    // Event listener
+    initListeners();
+
     return true;
+}
+
+void GameplayScene::initListeners() {
+    mTouchListener = EventListenerTouchOneByOne::create(); // Create event listener
+    if (mTouchListener) {
+        // Push down trigger
+        mTouchListener->onTouchBegan = [this](Touch* touch, Event* event){
+            CCLOG("Touch BEGAN");
+            mInitTouchPos = touch->getStartLocation();
+            return true;
+        };
+
+        // Let up trigger
+        mTouchListener->onTouchEnded = [=](Touch* touch, Event* event){
+            auto dir = eDirection::UNDEFINED;
+            auto loc = touch->getLocation();
+
+            if (loc.x > mInitTouchPos.x + touchSwipeThreshold) {
+                dir = eDirection::RIGHT;
+                CCLOG("Right");
+            } else if (loc.x < mInitTouchPos.x - touchSwipeThreshold) {
+                dir = eDirection::LEFT;
+                CCLOG("Left");
+            } else if (loc.y > mInitTouchPos.y + touchSwipeThreshold) {
+                dir = eDirection::UP;
+                CCLOG("Up");
+            } else if (loc.y < mInitTouchPos.y - touchSwipeThreshold) {
+                dir = eDirection::DOWN;
+                CCLOG("Down");
+            }
+
+            mInitTouchPos = loc;
+            CCLOG("Touch ENDED");
+        };
+
+        Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(mTouchListener, this); // Add listener
+        CCLOG("Event listener created.");
+    }
 }
 
 std::pair<int, int> GameplayScene::getRandomPos() {
@@ -104,5 +123,9 @@ void GameplayScene::generateTile() {
     mBoard->addChild(tile);
     mTileGrid[pos] = tile;
     tile->setBoardPos(pos);
+}
+
+void GameplayScene::onMove(eDirection dir) {
+    //
 }
 
