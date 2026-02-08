@@ -13,10 +13,11 @@ TileWidget *TileWidget::create(int num, const std::string &info) {
     return nullptr;
 }
 
-void TileWidget::setBoardPos(std::pair<int, int> pos) {
+void TileWidget::setBoardPos(const std::pair<int, int>& pos) {
     auto tileSize = getContentSize();
     setPosition(Vec2(
         static_cast<float>(pos.first) * tileSize.width + tileSize.width / 2,
         static_cast<float>(pos.second) * tileSize.height + tileSize.height / 2
     ));
+    _pos = pos;
 }

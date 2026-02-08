@@ -9,13 +9,13 @@ USING_NS_CC;
 using namespace cocos2d;
 
 namespace {
-    const std::pair<int, int> gridSize{4, 4};
+    const int _gridSizeX = 4;
+    const int _gridSizeY = 4;
     auto touchSwipeThreshold = 70.f;
 }
 
 bool GameplayScene::init() {
-    if ( !Scene::init() )
-    {
+    if (!Scene::init()) {
         return false;
     }
 
@@ -27,8 +27,7 @@ bool GameplayScene::init() {
     mRoot = CSLoader::createNodeWithVisibleSize("GUI/cocosstudio/widgets/gameplayScene.csb");
     if (mRoot) {
         addChild(mRoot);
-    }
-    else {
+    } else {
         return false;
     }
 
@@ -58,14 +57,14 @@ void GameplayScene::initListeners() {
     mTouchListener = EventListenerTouchOneByOne::create(); // Create event listener
     if (mTouchListener) {
         // Push down trigger
-        mTouchListener->onTouchBegan = [this](Touch* touch, Event* event){
+        mTouchListener->onTouchBegan = [this](Touch *touch, Event *event) {
             CCLOG("Touch BEGAN");
             mInitTouchPos = touch->getStartLocation();
             return true;
         };
 
         // Let up trigger
-        mTouchListener->onTouchEnded = [=](Touch* touch, Event* event){
+        mTouchListener->onTouchEnded = [=](Touch *touch, Event *event) {
             auto dir = eDirection::UNDEFINED;
             auto loc = touch->getLocation();
 
@@ -85,25 +84,27 @@ void GameplayScene::initListeners() {
 
             mInitTouchPos = loc;
             CCLOG("Touch ENDED");
+            onMove(dir);
         };
 
-        Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(mTouchListener, this); // Add listener
+        Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(mTouchListener, this);
+        // Add listener
         CCLOG("Event listener created.");
     }
 }
 
 std::pair<int, int> GameplayScene::getRandomPos() {
     // Store available places on the mTileGrid
-    std::vector<std::pair<int, int>> buffer;
-    for (int x = 0; x < gridSize.first; ++x) {
-        for (int y = 0; y < gridSize.second; ++y) {
-            if (mTileGrid[{x,y}] == nullptr) {
-                buffer.push_back(std::pair<int, int>(x, y));
+    std::vector<std::pair<int, int> > buffer;
+    for (int x = 0; x < _gridSizeX; ++x) {
+        for (int y = 0; y < _gridSizeY; ++y) {
+            if (mTileGrid[{x, y}] == nullptr) {
+                buffer.emplace_back(std::pair<int, int>(x, y));
             }
         }
     }
     if (buffer.empty()) {
-        return {-1,-1};
+        return {-1, -1};
     }
 
     // Pick random place from the store
@@ -126,6 +127,51 @@ void GameplayScene::generateTile() {
 }
 
 void GameplayScene::onMove(eDirection dir) {
-    //
+    if (dir == eDirection::UNDEFINED)
+        return;
+
+    // for each row/column 0[] 1[X] 2[] 3[X] -> 0[X] 1[X] 2[] 3[]
+
+    if (dir == eDirection::DOWN) {
+        for (int x = 0; x < _gridSizeX; ++x) {
+            std::vector<TileWidget*> col;
+            col.push_back(mTileGrid[{x, 0}]);
+            col.push_back(mTileGrid[{x, 1}]);
+            col.push_back(mTileGrid[{x, 2}]);
+            col.push_back(mTileGrid[{x, 3}]);
+            matchTileRow(col, dir);
+        }
+    }
+
+
+    // DOWN up->down
+    // create arrays for each column
+    // - X - -
+    // - - - -
+    // - - - -
+    // - - - -
+
+    // UP down->up
+    // create arrays for each column
+    // - - - -
+    // - - - -
+    // - - - -
+    // - X - -
+
+    // LEFT right to left
+    // create arrays for each row
+    // - - - -
+    // - - - -
+    // - - - -
+    // X - - -
 }
 
+void GameplayScene::matchTileRow(std::vector<TileWidget *> row, eDirection dir) {
+    auto const size = row.size();
+    // input [-] [-] [X] [-]
+    // output [X] [-] [-] [-]
+    // input [-] [X1] [X2] [-]
+    // output [X1] [X2] [-] [-]
+    // goal of this function: merge and move all item form the end of the array to the beginning
+
+}

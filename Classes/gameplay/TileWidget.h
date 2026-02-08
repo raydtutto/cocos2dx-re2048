@@ -11,7 +11,23 @@
 class TileWidget : public cocos2d::ui::ImageView {
 public:
     static TileWidget* create(int num = 0, const std::string& info = "");
-    void setBoardPos(std::pair<int, int> pos);
+    void setBoardPos(const std::pair<int, int>& pos);
+
+    std::pair<int, int> getBoardPos() const {
+        return _pos;
+    }
+
+    void setNumber(int num) {
+        _num = num;
+    }
+
+    int getNumber() const {
+        return _num;
+    }
+
+private:
+    std::pair<int, int> _pos;
+    int _num;
 };
 
 
