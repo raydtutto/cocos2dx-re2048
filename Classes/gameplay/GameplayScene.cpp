@@ -46,6 +46,11 @@ bool GameplayScene::init() {
     // Tiles
     generateTile();
     generateTile();
+    generateTile();
+    generateTile();
+    generateTile();
+    generateTile();
+    generateTile();
 
     // Event listener
     initListeners();
@@ -139,7 +144,13 @@ void GameplayScene::onMove(eDirection dir) {
             col.push_back(mTileGrid[{x, 1}]);
             col.push_back(mTileGrid[{x, 2}]);
             col.push_back(mTileGrid[{x, 3}]);
-            matchTileRow(col, dir);
+            auto row = matchTileRow(col, dir);
+
+            // todo remake
+            mTileGrid[{x, 0}] = row[0];
+            mTileGrid[{x, 1}] = row[1];
+            mTileGrid[{x, 2}] = row[2];
+            mTileGrid[{x, 3}] = row[3];
         }
     }
 
@@ -166,12 +177,32 @@ void GameplayScene::onMove(eDirection dir) {
     // X - - -
 }
 
-void GameplayScene::matchTileRow(std::vector<TileWidget *> row, eDirection dir) {
+std::vector<TileWidget*> GameplayScene::matchTileRow(std::vector<TileWidget *> row, eDirection dir) {
     auto const size = row.size();
-    // input [-] [-] [X] [-]
-    // output [X] [-] [-] [-]
-    // input [-] [X1] [X2] [-]
-    // output [X1] [X2] [-] [-]
-    // goal of this function: merge and move all item form the end of the array to the beginning
 
+    // Delete empty tiles from the row
+    for (auto it = row.begin(); it != row.end();) {
+        if (*it == nullptr || (*it)->getNumber() == 0) {
+            it = row.erase(it);
+        } else {
+            ++it;
+        }
+    }
+
+    // todo Merge tiles
+
+    // Move tiles
+    int i = 0;
+    std::pair<int, int> nextPos{0,0};
+    if (!row.empty()) {
+        nextPos.first = row[i]->getBoardPos().first;
+    }
+    while (i < row.size()) {
+        row[i]->setBoardPos(nextPos);
+        nextPos.second++;
+        i++;
+    }
+
+    row.resize(size);
+    return row;
 }

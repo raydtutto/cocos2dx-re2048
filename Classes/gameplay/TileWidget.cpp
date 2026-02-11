@@ -7,6 +7,7 @@ TileWidget *TileWidget::create(int num, const std::string &info) {
     if (pTile && pTile->init()) {
         pTile->loadTexture("GUI/cocosstudio/img/tile2.png");
         pTile->autorelease();
+        pTile->setNumber(num);
         return pTile;
     }
     CC_SAFE_DELETE(pTile);

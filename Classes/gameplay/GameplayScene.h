@@ -37,7 +37,7 @@ private:
     std::pair<int, int> getRandomPos();
     void generateTile();
     void onMove(eDirection dir);
-    void matchTileRow(std::vector<TileWidget*> buffer, eDirection dir);
+    std::vector<TileWidget *> matchTileRow(std::vector<TileWidget*> buffer, eDirection dir);
 
     cocos2d::Node* mRoot{nullptr};
     cocos2d::Node* mBoard{nullptr};
