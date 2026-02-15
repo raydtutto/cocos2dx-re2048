@@ -2,6 +2,10 @@
 
 using namespace cocos2d;
 
+float TileWidget::getTimeDelay() {
+    return .5f;
+}
+
 TileWidget *TileWidget::create(int num, const std::string &info) {
     auto pTile = new TileWidget();
     if (pTile && pTile->init()) {
@@ -14,12 +18,19 @@ TileWidget *TileWidget::create(int num, const std::string &info) {
     return nullptr;
 }
 
-void TileWidget::setBoardPos(const std::pair<int, int>& pos) {
+void TileWidget::setBoardPos(const std::pair<int, int>& pos, bool animate) {
     auto tileSize = getContentSize();
-    setPosition(Vec2(
+    auto nextPos = Vec2(
         static_cast<float>(pos.first) * tileSize.width + tileSize.width / 2,
         static_cast<float>(pos.second) * tileSize.height + tileSize.height / 2
-    ));
+    );
+    if (animate) {
+        auto action = cocos2d::MoveTo::create(getTimeDelay() / 2, nextPos);
+        runAction(action);
+    } else {
+        setPosition(nextPos);
+    }
+
     _pos = pos;
 }
 

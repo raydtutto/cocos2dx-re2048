@@ -37,15 +37,20 @@ public:
 private:
     void initListeners();
     std::pair<int, int> getRandomPos();
-    void generateTile();
+    void generateTile(bool animate = false);
     void onMove(eDirection dir);
     int matchTileRow(std::vector<TileGrid::iterator>& buffer);
 
+public:
+    void update(float delta) override;
+
+private:
     cocos2d::Node* mRoot{nullptr};
     cocos2d::Node* mBoard{nullptr};
     TileGrid mTileGrid;
     cocos2d::EventListenerTouchOneByOne* mTouchListener = nullptr;
     cocos2d::Vec2 mInitTouchPos;
+    float mMoveTimer{0.f};
 
 };
 

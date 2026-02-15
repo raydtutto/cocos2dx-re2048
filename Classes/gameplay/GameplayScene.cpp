@@ -55,6 +55,8 @@ bool GameplayScene::init() {
     // Event listener
     initListeners();
 
+    scheduleUpdate();
+
     return true;
 }
 
@@ -118,7 +120,7 @@ std::pair<int, int> GameplayScene::getRandomPos() {
     return buffer[dist(rd)];
 }
 
-void GameplayScene::generateTile() {
+void GameplayScene::generateTile(bool animate) {
     auto pos = getRandomPos();
     if (pos == std::pair<int, int>{-1, -1}) {
         CCLOGERROR("No empty space on the grid.");
@@ -134,6 +136,10 @@ void GameplayScene::generateTile() {
 void GameplayScene::onMove(eDirection dir) {
     if (dir == eDirection::UNDEFINED)
         return;
+    if (mMoveTimer < TileWidget::getTimeDelay()) {
+        return;
+    }
+    mMoveTimer = 0.f;
 
     // for each row/column 0[] 1[X] 2[] 3[X] -> 0[X] 1[X] 2[] 3[]
 
@@ -144,17 +150,22 @@ void GameplayScene::onMove(eDirection dir) {
             col.push_back(findCell({x, 1}));
             col.push_back(findCell({x, 2}));
             col.push_back(findCell({x, 3}));
-            movedCells = matchTileRow(col);
+            movedCells = std::max(movedCells, matchTileRow(col));
         }
     }
 
 
-    // DOWN up->down
-    // create arrays for each column
-    // - X - -
-    // - - - -
-    // - - - -
-    // - - - -
+    // todo DOWN up->down
+    if (dir == eDirection::UP) {
+        for (int x = 0; x < _gridSizeX; ++x) {
+            std::vector<TileGrid::iterator> col;
+            col.push_back(findCell({x, 3}));
+            col.push_back(findCell({x, 2}));
+            col.push_back(findCell({x, 1}));
+            col.push_back(findCell({x, 0}));
+            movedCells = std::max(movedCells, matchTileRow(col));
+        }
+    }
 
     // UP down->up
     // create arrays for each column
@@ -163,12 +174,34 @@ void GameplayScene::onMove(eDirection dir) {
     // - - - -
     // - X - -
 
-    // LEFT right to left
-    // create arrays for each row
-    // - - - -
-    // - - - -
-    // - - - -
-    // X - - -
+    if (dir == eDirection::LEFT) {
+        for (int y = 0; y < _gridSizeY; ++y) {
+            std::vector<TileGrid::iterator> col;
+            col.push_back(findCell({0, y}));
+            col.push_back(findCell({1, y}));
+            col.push_back(findCell({2, y}));
+            col.push_back(findCell({3, y}));
+            movedCells = std::max(movedCells, matchTileRow(col));
+        }
+    }
+
+    if (dir == eDirection::RIGHT) {
+        for (int y = 0; y < _gridSizeY; ++y) {
+            std::vector<TileGrid::iterator> col;
+            col.push_back(findCell({3, y}));
+            col.push_back(findCell({2, y}));
+            col.push_back(findCell({1, y}));
+            col.push_back(findCell({0, y}));
+            movedCells = std::max(movedCells, matchTileRow(col));
+        }
+    }
+
+    if (movedCells > 0) {
+        auto seq = Sequence::create(DelayTime::create(TileWidget::getTimeDelay()/2), CallFunc::create([this]() {
+            generateTile();
+        }), nullptr);
+        runAction(seq);
+    }
 }
 
 int GameplayScene::matchTileRow(std::vector<TileGrid::iterator>& buffer) {
@@ -186,6 +219,7 @@ int GameplayScene::matchTileRow(std::vector<TileGrid::iterator>& buffer) {
     for (int i = 0; i < list.size(); ++i) {
         if (i + 1 < list.size() && list[i + 1]->getNumber() == list[i]->getNumber()) {
             // Merge
+            // mScore += list[i]->getNumber();
             list[i]->setNumber(list[i]->getNumber()*2);
             list[i + 1]->removeFromParentAndCleanup(true);
             list[i + 1] = nullptr;
@@ -205,12 +239,18 @@ int GameplayScene::matchTileRow(std::vector<TileGrid::iterator>& buffer) {
         if (i < merged.size()) {
             // Write
             buffer[i]->second = merged[i];
-            buffer[i]->second->setBoardPos(buffer[i]->first);
-            moved++;
+            if (buffer[i]->first != merged[i]->getBoardPos())
+                moved++;
+            buffer[i]->second->setBoardPos(buffer[i]->first, true);
         } else {
             // Clean
             buffer[i]->second = nullptr;
         }
     }
     return moved;
+}
+
+void GameplayScene::update(float delta) {
+    Scene::update(delta);
+    mMoveTimer += delta;
 }
