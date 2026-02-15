@@ -17,9 +17,7 @@ public:
         return _pos;
     }
 
-    void setNumber(int num) {
-        _num = num;
-    }
+    void setNumber(int num);
 
     int getNumber() const {
         return _num;

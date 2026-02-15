@@ -15,6 +15,8 @@ enum class eDirection {
     RIGHT
 };
 
+using TileGrid = std::map<std::pair<int, int>, TileWidget*>;
+
 // GameplayScene - Main gameplay logic, game board owner, handling touches and game logic
 class GameplayScene : public cocos2d::Scene {
 public:
@@ -37,11 +39,11 @@ private:
     std::pair<int, int> getRandomPos();
     void generateTile();
     void onMove(eDirection dir);
-    std::vector<TileWidget *> matchTileRow(std::vector<TileWidget*> buffer, eDirection dir);
+    int matchTileRow(std::vector<TileGrid::iterator>& buffer);
 
     cocos2d::Node* mRoot{nullptr};
     cocos2d::Node* mBoard{nullptr};
-    std::map<std::pair<int, int>, TileWidget*> mTileGrid;
+    TileGrid mTileGrid;
     cocos2d::EventListenerTouchOneByOne* mTouchListener = nullptr;
     cocos2d::Vec2 mInitTouchPos;
 

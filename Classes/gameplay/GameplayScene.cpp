@@ -139,18 +139,12 @@ void GameplayScene::onMove(eDirection dir) {
 
     if (dir == eDirection::DOWN) {
         for (int x = 0; x < _gridSizeX; ++x) {
-            std::vector<TileWidget*> col;
-            col.push_back(mTileGrid[{x, 0}]);
-            col.push_back(mTileGrid[{x, 1}]);
-            col.push_back(mTileGrid[{x, 2}]);
-            col.push_back(mTileGrid[{x, 3}]);
-            auto row = matchTileRow(col, dir);
-
-            // todo remake
-            mTileGrid[{x, 0}] = row[0];
-            mTileGrid[{x, 1}] = row[1];
-            mTileGrid[{x, 2}] = row[2];
-            mTileGrid[{x, 3}] = row[3];
+            std::vector<TileGrid::iterator> col;
+            col.push_back(findCell({x, 0}));
+            col.push_back(findCell({x, 1}));
+            col.push_back(findCell({x, 2}));
+            col.push_back(findCell({x, 3}));
+            movedCells = matchTileRow(col);
         }
     }
 
@@ -177,32 +171,46 @@ void GameplayScene::onMove(eDirection dir) {
     // X - - -
 }
 
-std::vector<TileWidget*> GameplayScene::matchTileRow(std::vector<TileWidget *> row, eDirection dir) {
-    auto const size = row.size();
-
-    // Delete empty tiles from the row
-    for (auto it = row.begin(); it != row.end();) {
-        if (*it == nullptr || (*it)->getNumber() == 0) {
-            it = row.erase(it);
-        } else {
-            ++it;
+int GameplayScene::matchTileRow(std::vector<TileGrid::iterator>& buffer) {
+    int moved = 0;
+    // Get pointers
+    std::vector<TileWidget*> list;
+    for (auto item : buffer) {
+        if (item->second != nullptr) {
+            list.push_back(item->second);
         }
     }
 
-    // todo Merge tiles
+    // Merge elements in the list
+    std::vector<TileWidget*> merged;
+    for (int i = 0; i < list.size(); ++i) {
+        if (i + 1 < list.size() && list[i + 1]->getNumber() == list[i]->getNumber()) {
+            // Merge
+            list[i]->setNumber(list[i]->getNumber()*2);
+            list[i + 1]->removeFromParentAndCleanup(true);
+            list[i + 1] = nullptr;
+            merged.push_back(list[i]);
+            i++; // Skip removed element
+            moved++;
 
-    // Move tiles
-    int i = 0;
-    std::pair<int, int> nextPos{0,0};
-    if (!row.empty()) {
-        nextPos.first = row[i]->getBoardPos().first;
-    }
-    while (i < row.size()) {
-        row[i]->setBoardPos(nextPos);
-        nextPos.second++;
-        i++;
+            // todo score placement
+
+        } else {
+            merged.push_back(list[i]);
+        }
     }
 
-    row.resize(size);
-    return row;
+    // Update buffer
+    for (int i = 0; i < buffer.size(); ++i) {
+        if (i < merged.size()) {
+            // Write
+            buffer[i]->second = merged[i];
+            buffer[i]->second->setBoardPos(buffer[i]->first);
+            moved++;
+        } else {
+            // Clean
+            buffer[i]->second = nullptr;
+        }
+    }
+    return moved;
 }

@@ -22,3 +22,13 @@ void TileWidget::setBoardPos(const std::pair<int, int>& pos) {
     ));
     _pos = pos;
 }
+
+void TileWidget::setNumber(int num) {
+    _num = num;
+    std::string path = "GUI/cocosstudio/img/tile" + std::to_string(num) + ".png";
+    if (cocos2d::FileUtils::getInstance()->isFileExist(path)) {
+        loadTexture(path);
+    } else {
+        CCLOGERROR("Image path %s is invalid", path.c_str());
+    }
+}
