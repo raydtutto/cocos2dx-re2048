@@ -3,6 +3,7 @@
 
 #include "cocostudio/ActionTimeline/CSLoader.h"
 #include "utils/NodeUtils.h"
+#include "ui/UIText.h"
 
 USING_NS_CC;
 
@@ -42,6 +43,19 @@ bool GameplayScene::init() {
     } else {
         return false;
     }
+
+    // Create score
+    if (auto gameScore = dynamic_cast<cocos2d::ui::Text*>(NodeUtils::getNodeByName(mRoot, "score"))) {
+        gameScore->setString("0");
+        gameScore->setFontSize(128.f);
+
+        // Access user default
+        auto userDefaults = cocos2d::UserDefault::getInstance();
+        updateScore(mGameScore);
+    } else {
+        return false;
+    }
+
 
     // Tiles
     generateTile();
@@ -95,7 +109,6 @@ void GameplayScene::initListeners() {
         };
 
         Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(mTouchListener, this);
-        // Add listener
         CCLOG("Event listener created.");
     }
 }
@@ -154,8 +167,6 @@ void GameplayScene::onMove(eDirection dir) {
         }
     }
 
-
-    // todo DOWN up->down
     if (dir == eDirection::UP) {
         for (int x = 0; x < _gridSizeX; ++x) {
             std::vector<TileGrid::iterator> col;
@@ -218,17 +229,16 @@ int GameplayScene::matchTileRow(std::vector<TileGrid::iterator>& buffer) {
     std::vector<TileWidget*> merged;
     for (int i = 0; i < list.size(); ++i) {
         if (i + 1 < list.size() && list[i + 1]->getNumber() == list[i]->getNumber()) {
+            // Update score
+            updateScore(list[i]->getNumber()*2);
+
             // Merge
-            // mScore += list[i]->getNumber();
             list[i]->setNumber(list[i]->getNumber()*2);
             list[i + 1]->removeFromParentAndCleanup(true);
             list[i + 1] = nullptr;
             merged.push_back(list[i]);
             i++; // Skip removed element
             moved++;
-
-            // todo score placement
-
         } else {
             merged.push_back(list[i]);
         }
@@ -248,6 +258,42 @@ int GameplayScene::matchTileRow(std::vector<TileGrid::iterator>& buffer) {
         }
     }
     return moved;
+}
+
+void GameplayScene::updateScore(const int num) {
+    // Score reset
+    // cocos2d::UserDefault::getInstance()->setIntegerForKey("best_score", 0);
+
+    // Score update
+    mGameScore += num;
+    if (auto gameScore = dynamic_cast<cocos2d::ui::Text*>(NodeUtils::getNodeByName(mRoot, "score"))) {
+        gameScore->setString(std::to_string(mGameScore));
+    } else {
+        CCLOGERROR("No game score node.");
+    }
+
+    // Update user score
+    if (auto bestScoreLabel = dynamic_cast<cocos2d::ui::Text*>(NodeUtils::getNodeByName(mRoot, "bestScore"))) {
+        int bestScore = cocos2d::UserDefault::getInstance()->getIntegerForKey("best_score", 0);
+
+        // Update best score
+        if (mGameScore > bestScore) {
+            bestScore = mGameScore;
+            cocos2d::UserDefault::getInstance()->setIntegerForKey("best_score", bestScore);
+        }
+        bestScoreLabel->setString(std::to_string( bestScore));
+
+        // Center the best score label
+        if (auto bestScoreHolder = NodeUtils::getNodeByName(mRoot, "bestScoreHolder")) {
+            float totalWidth = 0;
+            for (auto child : bestScoreHolder->getChildren()) {
+                totalWidth += child->getContentSize().width;
+            }
+            bestScoreHolder->setContentSize(cocos2d::Size(totalWidth, bestScoreHolder->getContentSize().height));
+        }
+    } else {
+        CCLOGERROR("No game score.");
+    }
 }
 
 void GameplayScene::update(float delta) {

@@ -40,6 +40,7 @@ private:
     void generateTile(bool animate = false);
     void onMove(eDirection dir);
     int matchTileRow(std::vector<TileGrid::iterator>& buffer);
+    void updateScore(const int num);
 
 public:
     void update(float delta) override;
@@ -51,7 +52,7 @@ private:
     cocos2d::EventListenerTouchOneByOne* mTouchListener = nullptr;
     cocos2d::Vec2 mInitTouchPos;
     float mMoveTimer{0.f};
-
+    int mGameScore{0};
 };
 
 

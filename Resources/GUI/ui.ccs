@@ -3,6 +3,11 @@
   <SolutionFolder>
     <Group ctype="ResourceGroup">
       <RootFolder Name=".">
+        <Folder Name="fonts">
+          <TTF Name="Poppins-Bold.ttf" />
+          <TTF Name="Poppins-ExtraBold.ttf" />
+          <TTF Name="Poppins-Regular.ttf" />
+        </Folder>
         <Folder Name="img">
           <Image Name="tile0.png" />
           <Image Name="tile1024.png" />
@@ -22,7 +27,6 @@
           <Project Name="gameplayScene.csd" Type="Layer" />
           <Project Name="tile.csd" Type="Layer" />
         </Folder>
-        <TTF Name="Marker Felt.ttf" />
       </RootFolder>
     </Group>
   </SolutionFolder>
