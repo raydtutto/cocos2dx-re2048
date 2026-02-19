@@ -31,10 +31,10 @@
             <OutlineColor A="255" R="255" G="0" B="0" />
             <ShadowColor A="255" R="110" G="110" B="110" />
           </AbstractNodeData>
-          <AbstractNodeData Name="bestScoreHolder" ActionTag="-1151976739" Tag="14" IconVisible="False" PositionPercentXEnabled="True" PositionPercentYEnabled="True" PercentWidthEnable="True" PercentWidthEnabled="True" LeftMargin="76.8000" RightMargin="76.8000" TopMargin="189.5400" BottomMargin="783.4600" TouchEnable="True" ClipAble="False" BackColorAlpha="102" ColorAngle="90.0000" ScrollDirectionType="0" ctype="ListViewObjectData">
+          <AbstractNodeData Name="bestScoreHolder" ActionTag="-1151976739" Tag="14" IconVisible="False" PositionPercentXEnabled="True" PositionPercentYEnabled="True" PercentWidthEnable="True" PercentWidthEnabled="True" LeftMargin="76.8000" RightMargin="76.8000" TopMargin="189.5400" BottomMargin="783.4600" TouchEnable="True" ClipAble="False" BackColorAlpha="102" ColorAngle="90.0000" Scale9Width="1" Scale9Height="1" ScrollDirectionType="0" ctype="ListViewObjectData">
             <Size X="614.4000" Y="51.0000" />
             <Children>
-              <AbstractNodeData Name="bestScoreLabel" ActionTag="-1821688772" Tag="8" IconVisible="False" RightMargin="414.4000" BottomMargin="1.0000" IsCustomSize="True" FontSize="36" LabelText="Best score:" VerticalAlignmentType="VT_Center" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="TextObjectData">
+              <AbstractNodeData Name="bestScoreLabel" ActionTag="-1821688772" Tag="8" IconVisible="False" RightMargin="414.4000" BottomMargin="1.0000" IsCustomSize="True" FontSize="36" LabelText="Best score" VerticalAlignmentType="VT_Center" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="TextObjectData">
                 <Size X="200.0000" Y="50.0000" />
                 <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
                 <Position X="100.0000" Y="26.0000" />

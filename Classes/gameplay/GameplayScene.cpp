@@ -262,12 +262,20 @@ int GameplayScene::matchTileRow(std::vector<TileGrid::iterator>& buffer) {
 
 void GameplayScene::updateScore(const int num) {
     // Score reset
-    // cocos2d::UserDefault::getInstance()->setIntegerForKey("best_score", 0);
+    cocos2d::UserDefault::getInstance()->setIntegerForKey("best_score", 0);
 
     // Score update
     mGameScore += num;
     if (auto gameScore = dynamic_cast<cocos2d::ui::Text*>(NodeUtils::getNodeByName(mRoot, "score"))) {
         gameScore->setString(std::to_string(mGameScore));
+
+        // Scale animation
+        if (mGameScore != 0) {
+            const auto scaleBy = cocos2d::ScaleBy::create(.14f, .9f);
+            const auto scaleEaseIn = EaseQuadraticActionInOut::create(scaleBy->clone());
+            const auto scaleSeq = Sequence::create(scaleEaseIn, scaleEaseIn->reverse(), nullptr);
+            gameScore->runAction(scaleSeq);
+        }
     } else {
         CCLOGERROR("No game score node.");
     }
