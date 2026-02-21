@@ -1,7 +1,11 @@
 #include "GameplayScene.h"
+
+#include "MenuScene.h"
 #include "TileWidget.h"
 
 #include "cocostudio/ActionTimeline/CSLoader.h"
+#include "ui/UIButton.h"
+#include "ui/UIListView.h"
 #include "utils/NodeUtils.h"
 #include "ui/UIText.h"
 
@@ -34,7 +38,7 @@ bool GameplayScene::init() {
 
     if (auto gameboard = NodeUtils::getNodeByName(mRoot, "gameboard")) {
         auto visibleSize = gameboard->getContentSize();
-        auto boardBg = Sprite::create("GUI/cocosstudio/img/boardBg.png");
+        auto boardBg = Sprite::create("img/boardBg.png");
         auto boardSize = boardBg->getContentSize();
         boardBg->setPosition(visibleSize.width / 2, visibleSize.height / 2);
         boardBg->setScale(std::min(visibleSize.width / boardSize.width, visibleSize.height / boardSize.height));
@@ -52,6 +56,17 @@ bool GameplayScene::init() {
         // Access user default
         auto userDefaults = cocos2d::UserDefault::getInstance();
         updateScore(mGameScore);
+    } else {
+        return false;
+    }
+
+    // Menu button
+    if (auto menuButton = dynamic_cast<cocos2d::ui::Button*>(NodeUtils::getNodeByName(mRoot, "menuBtn"))) {
+        CCLOG("Back to menu.");
+        menuButton->addClickEventListener([](cocos2d::Ref*) {
+            CCLOG("Back to menu.");
+            Director::getInstance()->replaceScene(MenuScene::create());
+        });
     } else {
         return false;
     }
@@ -262,7 +277,7 @@ int GameplayScene::matchTileRow(std::vector<TileGrid::iterator>& buffer) {
 
 void GameplayScene::updateScore(const int num) {
     // Score reset
-    cocos2d::UserDefault::getInstance()->setIntegerForKey("best_score", 0);
+    // cocos2d::UserDefault::getInstance()->setIntegerForKey("best_score", 0);
 
     // Score update
     mGameScore += num;

@@ -9,6 +9,7 @@
           <TTF Name="Poppins-Regular.ttf" />
         </Folder>
         <Folder Name="img">
+          <Image Name="btnBorder.png" />
           <Image Name="tile0.png" />
           <Image Name="tile1024.png" />
           <Image Name="tile128.png" />
@@ -25,6 +26,7 @@
         </Folder>
         <Folder Name="widgets">
           <Project Name="gameplayScene.csd" Type="Layer" />
+          <Project Name="menuScene.csd" Type="Layer" />
           <Project Name="tile.csd" Type="Layer" />
         </Folder>
       </RootFolder>

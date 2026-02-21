@@ -24,6 +24,7 @@
 
 #include "AppDelegate.h"
 #include "gameplay/GameplayScene.h"
+#include "gameplay/MenuScene.h"
 #include "cocos2d_debug/imgui_debug_layer.h"
 
 // #define USE_AUDIO_ENGINE 1
@@ -97,16 +98,20 @@ bool AppDelegate::applicationDidFinishLaunching() {
         director->setContentScaleFactor(MIN(smallResolutionSize.height/designResolutionSize.height, smallResolutionSize.width/designResolutionSize.width));
     }*/
 
+    // Additional search path for game resources
+    cocos2d::FileUtils::getInstance()->addSearchPath("GUI/cocosstudio");
+
     // Initialize the debug layer on app startup
     #ifdef IMGUI_ENABLED
         debugModule::ImGuiDebugLayer::initializeLayer();
     #endif
 
     // create a scene. it's an autorelease object
-    auto scene = GameplayScene::create();
+    auto sceneMenu = MenuScene::create();
+    // auto sceneMenu = GameplayScene::create();
 
     // run
-    director->runWithScene(scene);
+    director->runWithScene(sceneMenu);
 
     return true;
 }
