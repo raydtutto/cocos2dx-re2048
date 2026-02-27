@@ -26,6 +26,9 @@
 #include "gameplay/GameplayScene.h"
 #include "gameplay/MenuScene.h"
 #include "cocos2d_debug/imgui_debug_layer.h"
+#include "cocostudio/ActionTimeline/CSLoader.h"
+#include "utils/CustomButtonReader.h"
+
 
 // #define USE_AUDIO_ENGINE 1
 
@@ -100,6 +103,12 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
     // Additional search path for game resources
     cocos2d::FileUtils::getInstance()->addSearchPath("GUI/cocosstudio");
+
+    CSLoader::getInstance(); // trigger loading before custom class
+    cocostudio::GUIReader::getInstance(); // trigger loading before custom class
+
+    // Replace ButtonReader with CustomButtonReader
+    ObjectFactory::getInstance()->registerType(cocos2d::ObjectFactory::TInfo("ButtonReader", &CustomButtonReader::createInstance));
 
     // Initialize the debug layer on app startup
     #ifdef IMGUI_ENABLED

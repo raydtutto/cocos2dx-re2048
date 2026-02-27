@@ -1,5 +1,6 @@
 #include "GameplayScene.h"
 
+#include "CustomButton.h"
 #include "MenuScene.h"
 #include "TileWidget.h"
 
@@ -61,7 +62,8 @@ bool GameplayScene::init() {
     }
 
     // Menu button
-    if (auto menuButton = dynamic_cast<cocos2d::ui::Button*>(NodeUtils::getNodeByName(mRoot, "menuBtn"))) {
+    // if (auto menuButton = dynamic_cast<cocos2d::ui::Button*>(NodeUtils::getNodeByName(mRoot, "menuBtn"))) {
+    if (auto menuButton = dynamic_cast<CustomButton*>(NodeUtils::getNodeByName(mRoot, "menuBtn"))) {
         CCLOG("Back to menu.");
         menuButton->addClickEventListener([](cocos2d::Ref*) {
             CCLOG("Back to menu.");

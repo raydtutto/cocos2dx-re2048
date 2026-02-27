@@ -1,8 +1,8 @@
 #include "MenuScene.h"
 
 #include "GameplayScene.h"
+#include "CustomButton.h"
 #include "cocostudio/ActionTimeline/CSLoader.h"
-#include "ui/UIButton.h"
 #include "utils/NodeUtils.h"
 #include "ui/UIText.h"
 
@@ -31,7 +31,7 @@ bool MenuScene::init() {
         bestScoreLabel->setString(std::to_string(bestScore));
     }
 
-    if (auto btnMenuPlay = dynamic_cast<cocos2d::ui::Button*>(NodeUtils::getNodeByName(root, "playBtn"))) {
+    if (auto btnMenuPlay = dynamic_cast<CustomButton*>(NodeUtils::getNodeByName(root, "playBtn"))) {
         btnMenuPlay->addClickEventListener([](Ref* eve) {
             CCLOG("Button clicked.");
             auto gameplayScene = GameplayScene::create();
@@ -39,8 +39,6 @@ bool MenuScene::init() {
         });
         CCLOG("Button found.");
         btnMenuPlay->setPressedActionEnabled(true);
-
-        // todo write class myButton
     }
 
     return true;
