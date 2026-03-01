@@ -9,6 +9,7 @@
 #include "ui/UIListView.h"
 #include "utils/NodeUtils.h"
 #include "ui/UIText.h"
+#include "editor-support/cocostudio/SimpleAudioEngine.h"
 
 USING_NS_CC;
 
@@ -19,6 +20,12 @@ namespace {
     const int _gridSizeY = 4;
     auto touchSwipeThreshold = 70.f;
 }
+
+#define PLAY_1 CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/click_1.ogg", false, 1.0f, 1.0f, 1.0f)
+#define PLAY_2 CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/click_2.ogg", false, 1.0f, 1.0f, 1.0f)
+#define PLAY_3 CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/click_3.ogg", false, 1.0f, 1.0f, 1.0f)
+#define PLAY_4 CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/click_4.ogg", false, 1.0f, 1.0f, 1.0f)
+#define PLAY_MAX CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/ding_deep.ogg", false, 1.0f, 1.0f, 1.0f)
 
 bool GameplayScene::init() {
     if (!Scene::init()) {
@@ -62,7 +69,6 @@ bool GameplayScene::init() {
     }
 
     // Menu button
-    // if (auto menuButton = dynamic_cast<cocos2d::ui::Button*>(NodeUtils::getNodeByName(mRoot, "menuBtn"))) {
     if (auto menuButton = dynamic_cast<CustomButton*>(NodeUtils::getNodeByName(mRoot, "menuBtn"))) {
         CCLOG("Back to menu.");
         menuButton->addClickEventListener([](cocos2d::Ref*) {
@@ -85,7 +91,6 @@ bool GameplayScene::init() {
 
     // Event listener
     initListeners();
-
     scheduleUpdate();
 
     return true;
@@ -246,6 +251,21 @@ int GameplayScene::matchTileRow(std::vector<TileGrid::iterator>& buffer) {
     std::vector<TileWidget*> merged;
     for (int i = 0; i < list.size(); ++i) {
         if (i + 1 < list.size() && list[i + 1]->getNumber() == list[i]->getNumber()) {
+            // Play sound
+
+            int num = list[i]->getNumber()*2;
+            if (num == 4 || num == 8) {
+                PLAY_1;
+            } else if (num == 16 || num == 32 || num == 64) {
+                PLAY_2;
+            } else if (num == 128 || num == 256 || num == 512) {
+                PLAY_3;
+            } else if (num == 1024 || num == 2048) {
+                PLAY_4;
+            } else {
+                PLAY_MAX;
+            }
+
             // Update score
             updateScore(list[i]->getNumber()*2);
 
@@ -285,14 +305,6 @@ void GameplayScene::updateScore(const int num) {
     mGameScore += num;
     if (auto gameScore = dynamic_cast<cocos2d::ui::Text*>(NodeUtils::getNodeByName(mRoot, "score"))) {
         gameScore->setString(std::to_string(mGameScore));
-
-        // Scale animation
-        if (mGameScore != 0) {
-            const auto scaleBy = cocos2d::ScaleBy::create(.14f, .9f);
-            const auto scaleEaseIn = EaseQuadraticActionInOut::create(scaleBy->clone());
-            const auto scaleSeq = Sequence::create(scaleEaseIn, scaleEaseIn->reverse(), nullptr);
-            gameScore->runAction(scaleSeq);
-        }
     } else {
         CCLOGERROR("No game score node.");
     }

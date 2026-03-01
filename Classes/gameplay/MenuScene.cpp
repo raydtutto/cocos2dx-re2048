@@ -14,13 +14,27 @@ bool MenuScene::init() {
     }
 
     // Background color
-    const Color4B colorBg = Color4B(80, 80, 85, 255);
+    const Color4B colorBg = Color4B(40, 40, 45, 255);
     const auto layerColor = LayerColor::create(colorBg);
     addChild(layerColor);
 
     auto root = CSLoader::createNodeWithVisibleSize("widgets/menuScene.csb");
     if (root) {
         addChild(root);
+    } else {
+        return false;
+    }
+
+    // Update title
+    if (auto titleImg = (NodeUtils::getNodeByName(root, "titleImg"))) {
+        titleImg->setOpacity(0);
+
+        // Sequence animation
+        auto fade = FadeIn::create(.5f); // Opacity
+        const auto scaleBy = cocos2d::ScaleBy::create(1.f, 1.1f); // Scale
+        const auto scaleEaseOut = EaseElasticOut::create(scaleBy->clone());
+        auto spawnOpacityScale = Spawn::createWithTwoActions(fade, scaleEaseOut); // Spawn animations
+        titleImg->runAction(spawnOpacityScale);
     } else {
         return false;
     }

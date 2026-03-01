@@ -23,6 +23,11 @@
           <Image Name="tile512.png" />
           <Image Name="tile64.png" />
           <Image Name="tile8.png" />
+          <Image Name="title.png" />
+        </Folder>
+        <Folder Name="sounds">
+          <File Name="akai-ax80-a3.ogg" />
+          <File Name="akai-ax80-f2.ogg" />
         </Folder>
         <Folder Name="widgets">
           <Project Name="gameplayScene.csd" Type="Layer" />
