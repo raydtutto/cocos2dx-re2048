@@ -11,7 +11,7 @@
 class TileWidget : public cocos2d::ui::ImageView {
 public:
     static float getTimeDelay();
-    static TileWidget* create(int num = 0, const std::string& info = "");
+    static TileWidget* create(int num = 0);
     void setBoardPos(const std::pair<int, int>& pos, bool animate = true);
 
     std::pair<int, int> getBoardPos() const {

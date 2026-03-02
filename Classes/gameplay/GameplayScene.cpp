@@ -162,15 +162,18 @@ void GameplayScene::generateTile(bool animate) {
         return;
     }
 
-    auto tile = TileWidget::create(2, "test");
+    auto tile = TileWidget::create(2);
     mBoard->addChild(tile);
     mTileGrid[pos] = tile;
     tile->setBoardPos(pos);
 }
 
 void GameplayScene::onMove(eDirection dir) {
-    if (dir == eDirection::UNDEFINED)
+    if (dir == eDirection::UNDEFINED) {
+        CCLOGERROR("Undefined direction.");
         return;
+    }
+
     if (mMoveTimer < TileWidget::getTimeDelay()) {
         return;
     }
@@ -234,6 +237,10 @@ void GameplayScene::onMove(eDirection dir) {
             generateTile();
         }), nullptr);
         runAction(seq);
+    } else {
+        if (checkUnsolvableBoard()) {
+            CCLOG("Game over!");
+        }
     }
 }
 
@@ -299,7 +306,7 @@ int GameplayScene::matchTileRow(std::vector<TileGrid::iterator>& buffer) {
 
 void GameplayScene::updateScore(const int num) {
     // Score reset
-    // cocos2d::UserDefault::getInstance()->setIntegerForKey("best_score", 0);
+    cocos2d::UserDefault::getInstance()->setIntegerForKey("best_score", 0);
 
     // Score update
     mGameScore += num;
@@ -331,6 +338,63 @@ void GameplayScene::updateScore(const int num) {
     } else {
         CCLOGERROR("No game score.");
     }
+}
+
+void GameplayScene::debugGenerateUnsolvableBoard() {
+    std::vector<std::tuple<int, int, int>> list = { // x y num
+        {0, 0, 2},
+        {0, 1, 4},
+        {0, 2, 8},
+        {0, 3, 16},
+
+        {1, 0, 32},
+        {1, 1, 64},
+        {1, 2, 128},
+        {1, 3, 256},
+
+        {2, 0, 512},
+        {2, 1, 1024},
+        {2, 2, 2048},
+        {2, 3, 4096},
+
+        {3, 0, 2},
+        {3, 1, 4},
+        {3, 2, 8},
+        {3, 3, 16}
+    };
+
+    for (const auto& [x, y, num] : list) {
+        auto tile = TileWidget::create(num);
+        mBoard->addChild(tile);
+        mTileGrid[std::pair<int, int>(x, y)] = tile;
+        tile->setBoardPos(std::pair<int, int>(x, y), false);
+    }
+}
+
+bool GameplayScene::checkUnsolvableBoard() {
+    for (int x = 0; x < _gridSizeX; ++x) {
+        for (int y = 0; y < _gridSizeY; ++y) {
+            if (mTileGrid[{x, y}] == nullptr) {
+                return false;
+            }
+
+            int nextX = x + 1;
+            if (nextX <= _gridSizeX && mTileGrid[{nextX, y}] != nullptr) {
+                if (mTileGrid[{x, y}]->getNumber() == mTileGrid[{nextX, y}]->getNumber()) {
+                    return false;
+                }
+            }
+
+            int nextY = y + 1;
+            if (nextY <= _gridSizeY && mTileGrid[{x, nextY}] != nullptr) {
+                if (mTileGrid[{x, y}]->getNumber() == mTileGrid[{x, nextY}]->getNumber()) {
+                    return false;
+                }
+            }
+        }
+    }
+
+    return true;
 }
 
 void GameplayScene::update(float delta) {

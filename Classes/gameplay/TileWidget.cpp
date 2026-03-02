@@ -6,12 +6,11 @@ float TileWidget::getTimeDelay() {
     return .5f;
 }
 
-TileWidget *TileWidget::create(int num, const std::string &info) {
+TileWidget *TileWidget::create(int num) {
     auto pTile = new TileWidget();
     if (pTile && pTile->init()) {
         pTile->loadTexture("GUI/cocosstudio/img/tile2.png");
         pTile->autorelease();
-        // pTile->setScale(.5f);
         pTile->setNumber(num);
         return pTile;
     }
