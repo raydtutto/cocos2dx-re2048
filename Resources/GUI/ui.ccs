@@ -26,8 +26,13 @@
           <Image Name="title.png" />
         </Folder>
         <Folder Name="sounds">
-          <File Name="akai-ax80-a3.ogg" />
-          <File Name="akai-ax80-f2.ogg" />
+          <File Name="button.ogg" />
+          <File Name="click_0.ogg" />
+          <File Name="click_1.ogg" />
+          <File Name="click_2.ogg" />
+          <File Name="click_3.ogg" />
+          <File Name="click_4.ogg" />
+          <File Name="ding_deep.ogg" />
         </Folder>
         <Folder Name="widgets">
           <Project Name="gameplayScene.csd" Type="Layer" />

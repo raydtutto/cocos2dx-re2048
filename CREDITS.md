@@ -1,3 +1,5 @@
 # Credits
 
-https://opengameart.org/users/robin-lamb - sounds
+## Sounds
+- https://opengameart.org/users/robin-lamb
+- https://freesound.org/people/Sadiquecat

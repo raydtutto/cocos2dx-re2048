@@ -39,9 +39,10 @@ private:
     std::pair<int, int> getRandomPos();
     void generateTile(bool animate = false);
     void onMove(eDirection dir);
-    int matchTileRow(std::vector<TileGrid::iterator>& buffer);
+    std::pair<int, int> matchTileRow(std::vector<TileGrid::iterator>& buffer); // <1 moved cells, 2 max merged number>
     void updateScore(int num);
     bool checkUnsolvableBoard();
+    static void playSound(int num);
 
     void debugGenerateUnsolvableBoard();
 

@@ -25,6 +25,7 @@ namespace {
 #define PLAY_2 CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/click_2.ogg", false, 1.0f, 1.0f, 1.0f)
 #define PLAY_3 CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/click_3.ogg", false, 1.0f, 1.0f, 1.0f)
 #define PLAY_4 CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/click_4.ogg", false, 1.0f, 1.0f, 1.0f)
+#define PLAY_NULL CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/click_0.ogg", false, 1.0f, 1.0f, 1.0f)
 #define PLAY_MAX CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/ding_deep.ogg", false, 1.0f, 1.0f, 1.0f)
 
 bool GameplayScene::init() {
@@ -188,7 +189,11 @@ void GameplayScene::onMove(eDirection dir) {
             col.push_back(findCell({x, 1}));
             col.push_back(findCell({x, 2}));
             col.push_back(findCell({x, 3}));
-            movedCells = std::max(movedCells, matchTileRow(col));
+
+            auto result = matchTileRow(col);  // <1 moved cells, 2 max merged number>
+
+            movedCells = std::max(movedCells, result.first);
+            numMergedMax = (numMergedMax > result.second) ? numMergedMax : result.second;
         }
     }
 
@@ -199,7 +204,11 @@ void GameplayScene::onMove(eDirection dir) {
             col.push_back(findCell({x, 2}));
             col.push_back(findCell({x, 1}));
             col.push_back(findCell({x, 0}));
-            movedCells = std::max(movedCells, matchTileRow(col));
+
+            auto result = matchTileRow(col); // <1 moved cells, 2 max merged number>
+
+            movedCells = std::max(movedCells, result.first);
+            numMergedMax = (numMergedMax > result.second) ? numMergedMax : result.second;
         }
     }
 
@@ -217,7 +226,11 @@ void GameplayScene::onMove(eDirection dir) {
             col.push_back(findCell({1, y}));
             col.push_back(findCell({2, y}));
             col.push_back(findCell({3, y}));
-            movedCells = std::max(movedCells, matchTileRow(col));
+
+            auto result = matchTileRow(col); // <1 moved cells, 2 max merged number>
+
+            movedCells = std::max(movedCells, result.first);
+            numMergedMax = (numMergedMax > result.second) ? numMergedMax : result.second;
         }
     }
 
@@ -228,9 +241,15 @@ void GameplayScene::onMove(eDirection dir) {
             col.push_back(findCell({2, y}));
             col.push_back(findCell({1, y}));
             col.push_back(findCell({0, y}));
-            movedCells = std::max(movedCells, matchTileRow(col));
+
+            auto result = matchTileRow(col); // <1 moved cells, 2 max merged number>
+
+            movedCells = std::max(movedCells, result.first);
+            numMergedMax = (numMergedMax > result.second) ? numMergedMax : result.second;
         }
     }
+
+    playSound(numMergedMax);
 
     if (movedCells > 0) {
         auto seq = Sequence::create(DelayTime::create(TileWidget::getTimeDelay()/2), CallFunc::create([this]() {
@@ -244,7 +263,38 @@ void GameplayScene::onMove(eDirection dir) {
     }
 }
 
-int GameplayScene::matchTileRow(std::vector<TileGrid::iterator>& buffer) {
+void GameplayScene::playSound(const int num) {
+    switch (num) {
+        case 4:
+        case 8:
+            PLAY_1;
+            break;
+        case 16:
+        case 32:
+        case 64:
+            PLAY_2;
+            break;
+        case 128:
+        case 256:
+        case 512:
+            PLAY_3;
+            break;
+        case 1024:
+        case 2048:
+            PLAY_4;
+            break;
+        case 4096:
+            PLAY_MAX;
+            break;
+        case 0:
+            PLAY_NULL;
+            break;
+        default:
+            break;
+    }
+}
+
+std::pair<int, int> GameplayScene::matchTileRow(std::vector<TileGrid::iterator>& buffer) {
     int moved = 0;
     // Get pointers
     std::vector<TileWidget*> list;
@@ -256,22 +306,10 @@ int GameplayScene::matchTileRow(std::vector<TileGrid::iterator>& buffer) {
 
     // Merge elements in the list
     std::vector<TileWidget*> merged;
+    int numMaxMerged = 0;
     for (int i = 0; i < list.size(); ++i) {
         if (i + 1 < list.size() && list[i + 1]->getNumber() == list[i]->getNumber()) {
-            // Play sound
-
-            int num = list[i]->getNumber()*2;
-            if (num == 4 || num == 8) {
-                PLAY_1;
-            } else if (num == 16 || num == 32 || num == 64) {
-                PLAY_2;
-            } else if (num == 128 || num == 256 || num == 512) {
-                PLAY_3;
-            } else if (num == 1024 || num == 2048) {
-                PLAY_4;
-            } else {
-                PLAY_MAX;
-            }
+            numMaxMerged = std::max(numMaxMerged, list[i]->getNumber()*2);
 
             // Update score
             updateScore(list[i]->getNumber()*2);
@@ -301,7 +339,8 @@ int GameplayScene::matchTileRow(std::vector<TileGrid::iterator>& buffer) {
             buffer[i]->second = nullptr;
         }
     }
-    return moved;
+
+    return {moved, numMaxMerged};
 }
 
 void GameplayScene::updateScore(const int num) {
