@@ -5,6 +5,7 @@
 #include "cocostudio/ActionTimeline/CSLoader.h"
 #include "utils/NodeUtils.h"
 #include "ui/UIText.h"
+#include "editor-support/cocostudio/SimpleAudioEngine.h"
 
 using namespace cocos2d;
 
@@ -48,6 +49,7 @@ bool MenuScene::init() {
     if (auto btnMenuPlay = dynamic_cast<CustomButton*>(NodeUtils::getNodeByName(root, "playBtn"))) {
         btnMenuPlay->addClickEventListener([](Ref* eve) {
             CCLOG("Button clicked.");
+            CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/button.ogg", false, 1.0f, 1.0f, 1.0f);
             auto gameplayScene = GameplayScene::create();
             Director::getInstance()->replaceScene(gameplayScene);
         });

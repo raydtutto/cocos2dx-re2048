@@ -21,6 +21,7 @@ namespace {
     auto touchSwipeThreshold = 70.f;
 }
 
+// Sounds
 #define PLAY_1 CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/click_1.ogg", false, 1.0f, 1.0f, 1.0f)
 #define PLAY_2 CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/click_2.ogg", false, 1.0f, 1.0f, 1.0f)
 #define PLAY_3 CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/click_3.ogg", false, 1.0f, 1.0f, 1.0f)
@@ -74,6 +75,7 @@ bool GameplayScene::init() {
         CCLOG("Back to menu.");
         menuButton->addClickEventListener([](cocos2d::Ref*) {
             CCLOG("Back to menu.");
+            CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/button.ogg", false, 1.0f, 1.0f, 1.0f);
             Director::getInstance()->replaceScene(MenuScene::create());
         });
     } else {
