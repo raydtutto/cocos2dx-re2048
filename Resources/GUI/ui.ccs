@@ -6,9 +6,27 @@
         <Folder Name="fonts">
           <TTF Name="Poppins-Bold.ttf" />
           <TTF Name="Poppins-ExtraBold.ttf" />
+          <TTF Name="Poppins-Light.ttf" />
           <TTF Name="Poppins-Regular.ttf" />
         </Folder>
         <Folder Name="img">
+          <Folder Name="icons">
+            <Image Name="backward.png" />
+            <Image Name="reset.png" />
+            <Image Name="sound-off.png" />
+            <Image Name="sound-on.png" />
+            <Image Name="reset-disabled.png" />
+          </Folder>
+          <Folder Name="title">
+            <Image Name="title-0bg.png" />
+            <Image Name="title-0num.png" />
+            <Image Name="title-2bg.png" />
+            <Image Name="title-2num.png" />
+            <Image Name="title-4bg.png" />
+            <Image Name="title-4num.png" />
+            <Image Name="title-8bg.png" />
+            <Image Name="title-8num.png" />
+          </Folder>
           <Image Name="btnBorder.png" />
           <Image Name="tile0.png" />
           <Image Name="tile1024.png" />

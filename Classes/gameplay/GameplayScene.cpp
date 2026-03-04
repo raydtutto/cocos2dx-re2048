@@ -29,6 +29,29 @@ namespace {
 #define PLAY_NULL CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/click_0.ogg", false, 1.0f, 1.0f, 1.0f)
 #define PLAY_MAX CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/ding_deep.ogg", false, 1.0f, 1.0f, 1.0f)
 
+GameplayScene* GameplayScene::create() {
+    auto pRet = new(std::nothrow) GameplayScene();
+    if (pRet && pRet->init()) {
+        pRet->autorelease();
+        return pRet;
+    } else {
+        delete pRet;
+        pRet = nullptr;
+        return nullptr;
+    }
+}
+
+GameplayScene::~GameplayScene() {
+    if (mTouchListener) {
+        Director::getInstance()->getEventDispatcher()->removeEventListener(mTouchListener);
+        mTouchListener = nullptr;
+    }
+    if (mKeyboardListener) {
+        Director::getInstance()->getEventDispatcher()->removeEventListener(mKeyboardListener);
+        mKeyboardListener = nullptr;
+    }
+}
+
 bool GameplayScene::init() {
     if (!Scene::init()) {
         return false;
@@ -100,6 +123,9 @@ bool GameplayScene::init() {
 }
 
 void GameplayScene::initListeners() {
+    if (mTouchListener) {
+        Director::getInstance()->getEventDispatcher()->removeEventListener(mTouchListener);
+    }
     mTouchListener = EventListenerTouchOneByOne::create(); // Create event listener
     if (mTouchListener) {
         // Push down trigger

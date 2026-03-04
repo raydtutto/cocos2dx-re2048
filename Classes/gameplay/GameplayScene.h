@@ -20,18 +20,8 @@ using TileGrid = std::map<std::pair<int, int>, TileWidget*>;
 // GameplayScene - Main gameplay logic, game board owner, handling touches and game logic
 class GameplayScene : public cocos2d::Scene {
 public:
-    // implement the "static create()" method manually
-    static GameplayScene *create() {
-        GameplayScene *pRet = new(std::nothrow) GameplayScene();
-        if (pRet && pRet->init()) {
-            pRet->autorelease();
-            return pRet;
-        } else {
-            delete pRet;
-            pRet = nullptr;
-            return nullptr;
-        }
-    }
+    static GameplayScene *create();
+    ~GameplayScene() override;
     bool init() override;
 
 private:
