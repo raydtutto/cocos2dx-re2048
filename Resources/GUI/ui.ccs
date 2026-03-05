@@ -13,9 +13,9 @@
           <Folder Name="icons">
             <Image Name="backward.png" />
             <Image Name="reset.png" />
+            <Image Name="reset-disabled.png" />
             <Image Name="sound-off.png" />
             <Image Name="sound-on.png" />
-            <Image Name="reset-disabled.png" />
           </Folder>
           <Folder Name="title">
             <Image Name="title-0bg.png" />

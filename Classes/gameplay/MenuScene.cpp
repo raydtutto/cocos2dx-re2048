@@ -46,15 +46,15 @@ bool MenuScene::init() {
     const auto layerColor = LayerColor::create(colorBg);
     addChild(layerColor);
 
-    const auto root = CSLoader::createNodeWithVisibleSize("widgets/menuScene.csb");
-    if (root) {
-        addChild(root);
+    mRoot = CSLoader::createNodeWithVisibleSize("widgets/menuScene.csb");
+    if (mRoot) {
+        addChild(mRoot);
     } else {
         return false;
     }
 
     // Title animation
-    if (const auto titleImg = dynamic_cast<cocos2d::ui::ListView*>(NodeUtils::getNodeByName(root, "titleHolder"))) {
+    if (const auto titleImg = dynamic_cast<cocos2d::ui::ListView*>(NodeUtils::getNodeByName(mRoot, "titleHolder"))) {
         titleImg->setScrollBarEnabled(false);
         const std::vector<std::string> nodeNames = { "num2Holder", "num0Holder", "num4Holder", "num8Holder" };
 
@@ -68,18 +68,58 @@ bool MenuScene::init() {
     }
 
     // Update best user score
-    if (const auto bestScoreHolder = dynamic_cast<cocos2d::ui::ListView*>(NodeUtils::getNodeByName(root, "bestScoreHolder"))) {
+    if (const auto bestScoreHolder = dynamic_cast<cocos2d::ui::ListView*>(NodeUtils::getNodeByName(mRoot, "bestScoreHolder"))) {
         bestScoreHolder->setScrollBarEnabled(false);
 
-        if (const auto bestScoreLabel = dynamic_cast<cocos2d::ui::Text*>(NodeUtils::getNodeByName(root, "bestScore"))) {
+        if (const auto bestScoreLabel = dynamic_cast<cocos2d::ui::Text*>(NodeUtils::getNodeByName(mRoot, "bestScore"))) {
             const int bestScore = cocos2d::UserDefault::getInstance()->getIntegerForKey("best_score", 0);
             bestScoreLabel->setString(std::to_string(bestScore));
         }
     }
 
     // Remove textLabel scrollbar
-    if (const auto textHolder = dynamic_cast<cocos2d::ui::ListView*>(NodeUtils::getNodeByName(root, "textHolder"))) {
+    if (const auto textHolder = dynamic_cast<cocos2d::ui::ListView*>(NodeUtils::getNodeByName(mRoot, "textHolder"))) {
         textHolder->setScrollBarEnabled(false);
+    }
+
+    // Manage sound
+    const auto audioEnabled = cocos2d::UserDefault::getInstance()->getBoolForKey("audioEnabled", true);
+    auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
+    if (!audioEnabled) {
+        audio->pauseAllEffects();
+    } else {
+        audio->resumeAllEffects();
+    }
+
+    // Mute all sounds
+    if (const auto iconSoundHolder = dynamic_cast<cocos2d::ui::Button *>(NodeUtils::getNodeByName(
+        mRoot, "iconSoundHolder"))) {
+        const auto iconSoundOnImage = dynamic_cast<cocos2d::Sprite*>(NodeUtils::getNodeByName(mRoot, "imageSoundOn"));
+        const auto iconSoundOffImage = dynamic_cast<cocos2d::Sprite*>(NodeUtils::getNodeByName(mRoot, "imageSoundOff"));
+        if (iconSoundOnImage && iconSoundOffImage) {
+            iconSoundOnImage->setVisible(audioEnabled);
+            iconSoundOffImage->setVisible(!audioEnabled);
+        }
+        iconSoundHolder->addTouchEventListener([&](Ref* obj, cocos2d::ui::Widget::TouchEventType type) {
+            switch (type) {
+                case cocos2d::ui::Widget::TouchEventType::BEGAN:
+                case ui::Widget::TouchEventType::MOVED:
+                case ui::Widget::TouchEventType::CANCELED:
+                    break;
+                case ui::Widget::TouchEventType::ENDED: {
+                    CCLOG("Mute clicked");
+                    const auto iconSoundOnImage = dynamic_cast<cocos2d::Sprite*>(NodeUtils::getNodeByName(mRoot, "imageSoundOn"));
+                    const auto iconSoundOffImage = dynamic_cast<cocos2d::Sprite*>(NodeUtils::getNodeByName(mRoot, "imageSoundOff"));
+                    if (iconSoundOnImage && iconSoundOffImage) {
+                        const auto audio = toggleAudio();
+                        iconSoundOnImage->setVisible(audio);
+                        iconSoundOffImage->setVisible(!audio);
+                    }
+                } break;
+                default:
+                    break;
+            }
+        });
     }
 
     initListeners();
@@ -97,7 +137,10 @@ void MenuScene::initListeners() {
         mKeyboardListener->onKeyReleased = [](const EventKeyboard::KeyCode keyCode, Event*) {
             if (keyCode == EventKeyboard::KeyCode::KEY_ENTER || keyCode == EventKeyboard::KeyCode::KEY_KP_ENTER) {
                 CCLOG("Button clicked.");
-                CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/button.ogg", false, 1.0f, 1.0f, 1.0f);
+                auto audio = cocos2d::UserDefault::getInstance()->getBoolForKey("audioEnabled", true);
+                if (audio) {
+                    CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/button.ogg", false, 1.0f, 1.0f, 1.0f);
+                }
                 auto gameplayScene = GameplayScene::create();
                 Director::getInstance()->replaceScene(gameplayScene);
             }
@@ -120,13 +163,28 @@ void MenuScene::initListeners() {
         // Start game
         mTouchListener->onTouchEnded = [] (Touch *touch, Event *event) {
             CCLOG("Start game");
-            CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/button.ogg", false, 1.0f, 1.0f, 1.0f);
+            auto audio = cocos2d::UserDefault::getInstance()->getBoolForKey("audioEnabled", true);
+            if (audio) {
+                CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/button.ogg", false, 1.0f, 1.0f, 1.0f);
+            }
             Director::getInstance()->replaceScene(GameplayScene::create());
         };
 
         Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(mTouchListener, this);
         CCLOG("Event touch listener created.");
     }
+}
+
+bool MenuScene::toggleAudio() {
+    const auto audioEnabled = cocos2d::UserDefault::getInstance()->getBoolForKey("audioEnabled", true);
+    cocos2d::UserDefault::getInstance()->setBoolForKey("audioEnabled", !audioEnabled);
+    auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
+    if (audioEnabled) {
+        audio->pauseAllEffects();
+    } else {
+        audio->resumeAllEffects();
+    }
+    return !audioEnabled;
 }
 
 void scaleAnimation(cocos2d::Node* image) {

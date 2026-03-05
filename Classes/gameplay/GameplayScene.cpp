@@ -84,7 +84,6 @@ bool GameplayScene::init() {
     // Create score
     if (auto gameScore = dynamic_cast<cocos2d::ui::Text*>(NodeUtils::getNodeByName(mRoot, "score"))) {
         gameScore->setString("0");
-        gameScore->setFontSize(128.f);
 
         // Access user default
         auto userDefaults = cocos2d::UserDefault::getInstance();
@@ -98,7 +97,10 @@ bool GameplayScene::init() {
         CCLOG("Back to menu.");
         menuButton->addClickEventListener([](cocos2d::Ref*) {
             CCLOG("Back to menu.");
-            CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/button.ogg", false, 1.0f, 1.0f, 1.0f);
+            auto audio = cocos2d::UserDefault::getInstance()->getBoolForKey("audioEnabled", true);
+            if (audio) {
+                CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/button.ogg", false, 1.0f, 1.0f, 1.0f);
+            }
             Director::getInstance()->replaceScene(MenuScene::create());
         });
     } else {
@@ -292,6 +294,11 @@ void GameplayScene::onMove(eDirection dir) {
 }
 
 void GameplayScene::playSound(const int num) {
+    auto audio = cocos2d::UserDefault::getInstance()->getBoolForKey("audioEnabled", true);
+    if (!audio) {
+        return;
+    }
+
     switch (num) {
         case 4:
         case 8:
@@ -377,7 +384,7 @@ void GameplayScene::updateScore(const int num) {
 
     // Score update
     mGameScore += num;
-    if (auto gameScore = dynamic_cast<cocos2d::ui::Text*>(NodeUtils::getNodeByName(mRoot, "score"))) {
+    if (const auto gameScore = dynamic_cast<cocos2d::ui::Text*>(NodeUtils::getNodeByName(mRoot, "score"))) {
         gameScore->setString(std::to_string(mGameScore));
     } else {
         CCLOGERROR("No game score node.");

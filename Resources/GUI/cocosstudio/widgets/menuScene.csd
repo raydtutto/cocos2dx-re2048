@@ -45,7 +45,7 @@
             <EndColor A="255" R="255" G="255" B="255" />
             <ColorVector ScaleY="1.0000" />
           </AbstractNodeData>
-          <AbstractNodeData Name="titleHolder" ActionTag="-896654803" Tag="44" IconVisible="False" PositionPercentXEnabled="True" PositionPercentYEnabled="True" LeftMargin="-168.4800" RightMargin="-167.5200" TopMargin="294.4400" BottomMargin="357.5600" ClipAble="False" BackColorAlpha="102" ColorAngle="90.0000" Scale9Width="1" Scale9Height="1" ScrollDirectionType="0" ItemMargin="-80" VerticalType="Align_VerticalCenter" ctype="ListViewObjectData">
+          <AbstractNodeData Name="titleHolder" ActionTag="-896654803" Tag="44" IconVisible="False" PositionPercentXEnabled="True" PositionPercentYEnabled="True" LeftMargin="-168.4608" RightMargin="-167.5392" TopMargin="294.4608" BottomMargin="357.5392" ClipAble="False" BackColorAlpha="102" ColorAngle="90.0000" Scale9Width="1" Scale9Height="1" ScrollDirectionType="0" ItemMargin="-80" VerticalType="Align_VerticalCenter" ctype="ListViewObjectData">
             <Size X="1104.0000" Y="372.0000" />
             <Children>
               <AbstractNodeData Name="num2Holder" ActionTag="499420987" Tag="45" IconVisible="False" RightMargin="876.0000" ClipAble="False" BackColorAlpha="0" ColorAngle="90.0000" Scale9Width="1" Scale9Height="1" ctype="PanelObjectData">
@@ -198,7 +198,7 @@
               </AbstractNodeData>
             </Children>
             <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
-            <Position X="383.5200" Y="543.5600" />
+            <Position X="383.5392" Y="543.5392" />
             <Scale ScaleX="0.5000" ScaleY="0.5000" />
             <CColor A="255" R="255" G="255" B="255" />
             <PrePosition X="0.4994" Y="0.5308" />
@@ -211,7 +211,7 @@
           <AbstractNodeData Name="iconSoundHolder" ActionTag="-1263941211" Tag="25" IconVisible="False" PositionPercentXEnabled="True" PositionPercentYEnabled="True" LeftMargin="580.4800" RightMargin="27.5200" TopMargin="841.6000" BottomMargin="22.4000" TouchEnable="True" FontSize="14" Scale9Enable="True" LeftEage="15" RightEage="15" TopEage="11" BottomEage="11" Scale9OriginX="-15" Scale9OriginY="-11" Scale9Width="30" Scale9Height="22" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="ButtonObjectData">
             <Size X="160.0000" Y="160.0000" />
             <Children>
-              <AbstractNodeData Name="image" ActionTag="-1370330611" Tag="26" IconVisible="False" PositionPercentXEnabled="True" PositionPercentYEnabled="True" ctype="SpriteObjectData">
+              <AbstractNodeData Name="imageSoundOn" ActionTag="-1370330611" Tag="26" IconVisible="False" PositionPercentXEnabled="True" PositionPercentYEnabled="True" ctype="SpriteObjectData">
                 <Size X="160.0000" Y="160.0000" />
                 <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
                 <Position X="80.0000" Y="80.0000" />
@@ -220,6 +220,17 @@
                 <PrePosition X="0.5000" Y="0.5000" />
                 <PreSize X="1.0000" Y="1.0000" />
                 <FileData Type="Normal" Path="img/icons/sound-on.png" Plist="" />
+                <BlendFunc Src="1" Dst="771" />
+              </AbstractNodeData>
+              <AbstractNodeData Name="imageSoundOff" ActionTag="455001474" VisibleForFrame="False" Tag="39" IconVisible="False" PositionPercentXEnabled="True" PositionPercentYEnabled="True" ctype="SpriteObjectData">
+                <Size X="160.0000" Y="160.0000" />
+                <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
+                <Position X="80.0000" Y="80.0000" />
+                <Scale ScaleX="1.0000" ScaleY="1.0000" />
+                <CColor A="255" R="255" G="255" B="255" />
+                <PrePosition X="0.5000" Y="0.5000" />
+                <PreSize X="1.0000" Y="1.0000" />
+                <FileData Type="Normal" Path="img/icons/sound-off.png" Plist="" />
                 <BlendFunc Src="1" Dst="771" />
               </AbstractNodeData>
             </Children>
@@ -258,7 +269,7 @@
             <OutlineColor A="255" R="255" G="0" B="0" />
             <ShadowColor A="255" R="110" G="110" B="110" />
           </AbstractNodeData>
-          <AbstractNodeData Name="textHolder" ActionTag="1262484914" Tag="45" IconVisible="False" LeftMargin="68.0000" RightMargin="68.0000" TopMargin="576.6400" BottomMargin="351.3600" ClipAble="False" BackColorAlpha="102" ColorAngle="90.0000" ScrollDirectionType="0" ItemMargin="20" VerticalType="Align_VerticalCenter" ctype="ListViewObjectData">
+          <AbstractNodeData Name="textHolder" ActionTag="1262484914" Tag="45" IconVisible="False" LeftMargin="68.0000" RightMargin="68.0000" TopMargin="576.6400" BottomMargin="351.3600" ClipAble="False" BackColorAlpha="102" ColorAngle="90.0000" Scale9Width="1" Scale9Height="1" ScrollDirectionType="0" ItemMargin="20" VerticalType="Align_VerticalCenter" ctype="ListViewObjectData">
             <Size X="632.0000" Y="96.0000" />
             <Children>
               <AbstractNodeData Name="press" ActionTag="261303677" Tag="27" IconVisible="False" RightMargin="467.0000" FontSize="64" LabelText="Press" HorizontalAlignmentType="HT_Center" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="TextObjectData">
