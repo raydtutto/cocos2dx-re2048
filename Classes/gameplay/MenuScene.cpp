@@ -2,6 +2,8 @@
 
 #include "GameplayScene.h"
 #include "CustomButton.h"
+#include "cocostudio/ActionTimeline/CCActionTimeline.h"
+#include "cocostudio/ActionTimeline/CCActionTimelineCache.h"
 #include "cocostudio/ActionTimeline/CSLoader.h"
 #include "utils/NodeUtils.h"
 #include "ui/UIText.h"
@@ -52,6 +54,11 @@ bool MenuScene::init() {
     } else {
         return false;
     }
+
+    // Title rotation
+    const auto titleRotationTimeline = CSLoader::createTimeline("widgets/menuScene.csb");
+    mRoot->runAction(titleRotationTimeline);
+    titleRotationTimeline->play("titleRotation", true);
 
     // Title animation
     if (const auto titleImg = dynamic_cast<cocos2d::ui::ListView*>(NodeUtils::getNodeByName(mRoot, "titleHolder"))) {
