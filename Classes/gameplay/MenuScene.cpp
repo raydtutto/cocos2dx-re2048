@@ -13,6 +13,7 @@
 using namespace cocos2d;
 
 void scaleAnimation(cocos2d::Node* image);
+// bla bla
 
 MenuScene* MenuScene::create() {
     auto pRet = new(std::nothrow) MenuScene();
@@ -115,12 +116,12 @@ bool MenuScene::init() {
                     break;
                 case ui::Widget::TouchEventType::ENDED: {
                     CCLOG("Mute clicked");
-                    const auto iconSoundOnImage = dynamic_cast<cocos2d::Sprite*>(NodeUtils::getNodeByName(mRoot, "imageSoundOn"));
-                    const auto iconSoundOffImage = dynamic_cast<cocos2d::Sprite*>(NodeUtils::getNodeByName(mRoot, "imageSoundOff"));
-                    if (iconSoundOnImage && iconSoundOffImage) {
+                    const auto iconSoundOnImg = dynamic_cast<cocos2d::Sprite*>(NodeUtils::getNodeByName(mRoot, "imageSoundOn"));
+                    const auto iconSoundOffImg = dynamic_cast<cocos2d::Sprite*>(NodeUtils::getNodeByName(mRoot, "imageSoundOff"));
+                    if (iconSoundOnImg && iconSoundOffImg) {
                         const auto audio = toggleAudio();
-                        iconSoundOnImage->setVisible(audio);
-                        iconSoundOffImage->setVisible(!audio);
+                        iconSoundOnImg->setVisible(audio);
+                        iconSoundOffImg->setVisible(!audio);
                     }
                 } break;
                 default:
@@ -185,7 +186,7 @@ void MenuScene::initListeners() {
 bool MenuScene::toggleAudio() {
     const auto audioEnabled = cocos2d::UserDefault::getInstance()->getBoolForKey("audioEnabled", true);
     cocos2d::UserDefault::getInstance()->setBoolForKey("audioEnabled", !audioEnabled);
-    auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
+    const auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
     if (audioEnabled) {
         audio->pauseAllEffects();
     } else {
@@ -197,7 +198,7 @@ bool MenuScene::toggleAudio() {
 void scaleAnimation(cocos2d::Node* image) {
     image->setScale(.9f);
     image->setAnchorPoint(Vec2(0.5, 0.5));
-    const auto scaleTo = cocos2d::ScaleTo::create(1.f, 1.f); // Scale
+    const auto scaleTo = cocos2d::ScaleTo::create(1.2f, 1.f); // Scale
     const auto scaleEaseOut = EaseElasticOut::create(scaleTo->clone());
     image->runAction(scaleEaseOut);
 }

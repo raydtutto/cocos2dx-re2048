@@ -33,6 +33,7 @@ private:
     void updateScore(int num);
     bool checkUnsolvableBoard();
     static void playSound(int num);
+    void gameOver();
 
     void debugGenerateUnsolvableBoard();
 
@@ -47,6 +48,7 @@ private:
     cocos2d::Vec2 mInitTouchPos;
     float mMoveTimer{0.f};
     int mGameScore{0};
+    bool mGameOver = false;
 };
 
 

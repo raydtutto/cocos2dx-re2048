@@ -2,12 +2,12 @@
   <PropertyGroup Name="menuScene" Type="Layer" ID="a9af8427-626c-46ce-83e6-3d0e85196007" Version="3.10.0.0" />
   <Content ctype="GameProjectContent">
     <Content>
-      <Animation Duration="270" Speed="1.0000" ActivedAnimationName="titleRotation">
+      <Animation Duration="360" Speed="1.0000" ActivedAnimationName="titleRotation">
         <Timeline ActionTag="1265665134" Property="Position">
           <PointFrame FrameIndex="0" X="186.0000" Y="186.0000">
             <EasingData Type="0" />
           </PointFrame>
-          <PointFrame FrameIndex="270" X="186.0000" Y="186.0000">
+          <PointFrame FrameIndex="360" X="186.0000" Y="186.0000">
             <EasingData Type="0" />
           </PointFrame>
         </Timeline>
@@ -15,7 +15,7 @@
           <ScaleFrame FrameIndex="0" X="1.0000" Y="1.0000">
             <EasingData Type="0" />
           </ScaleFrame>
-          <ScaleFrame FrameIndex="270" X="1.0000" Y="1.0000">
+          <ScaleFrame FrameIndex="360" X="1.0000" Y="1.0000">
             <EasingData Type="0" />
           </ScaleFrame>
         </Timeline>
@@ -23,7 +23,7 @@
           <ScaleFrame FrameIndex="0" X="0.0000" Y="0.0000">
             <EasingData Type="0" />
           </ScaleFrame>
-          <ScaleFrame FrameIndex="270" X="360.0000" Y="360.0000">
+          <ScaleFrame FrameIndex="360" X="360.0000" Y="360.0000">
             <EasingData Type="0" />
           </ScaleFrame>
         </Timeline>
@@ -31,7 +31,7 @@
           <PointFrame FrameIndex="0" X="186.0000" Y="186.0000">
             <EasingData Type="0" />
           </PointFrame>
-          <PointFrame FrameIndex="270" X="186.0000" Y="186.0000">
+          <PointFrame FrameIndex="360" X="186.0000" Y="186.0000">
             <EasingData Type="0" />
           </PointFrame>
         </Timeline>
@@ -39,7 +39,7 @@
           <ScaleFrame FrameIndex="0" X="1.0000" Y="1.0000">
             <EasingData Type="0" />
           </ScaleFrame>
-          <ScaleFrame FrameIndex="270" X="1.0000" Y="1.0000">
+          <ScaleFrame FrameIndex="360" X="1.0000" Y="1.0000">
             <EasingData Type="0" />
           </ScaleFrame>
         </Timeline>
@@ -47,7 +47,7 @@
           <ScaleFrame FrameIndex="0" X="0.0000" Y="0.0000">
             <EasingData Type="0" />
           </ScaleFrame>
-          <ScaleFrame FrameIndex="270" X="360.0000" Y="360.0000">
+          <ScaleFrame FrameIndex="360" X="360.0000" Y="360.0000">
             <EasingData Type="0" />
           </ScaleFrame>
         </Timeline>
@@ -55,7 +55,7 @@
           <PointFrame FrameIndex="0" X="186.0000" Y="186.0000">
             <EasingData Type="0" />
           </PointFrame>
-          <PointFrame FrameIndex="270" X="186.0000" Y="186.0000">
+          <PointFrame FrameIndex="360" X="186.0000" Y="186.0000">
             <EasingData Type="0" />
           </PointFrame>
         </Timeline>
@@ -63,7 +63,7 @@
           <ScaleFrame FrameIndex="0" X="1.0000" Y="1.0000">
             <EasingData Type="0" />
           </ScaleFrame>
-          <ScaleFrame FrameIndex="270" X="1.0000" Y="1.0000">
+          <ScaleFrame FrameIndex="360" X="1.0000" Y="1.0000">
             <EasingData Type="0" />
           </ScaleFrame>
         </Timeline>
@@ -71,7 +71,7 @@
           <ScaleFrame FrameIndex="0" X="0.0000" Y="0.0000">
             <EasingData Type="0" />
           </ScaleFrame>
-          <ScaleFrame FrameIndex="270" X="360.0000" Y="360.0000">
+          <ScaleFrame FrameIndex="360" X="360.0000" Y="360.0000">
             <EasingData Type="0" />
           </ScaleFrame>
         </Timeline>
@@ -79,7 +79,7 @@
           <PointFrame FrameIndex="0" X="186.0000" Y="186.0000">
             <EasingData Type="0" />
           </PointFrame>
-          <PointFrame FrameIndex="270" X="186.0000" Y="186.0000">
+          <PointFrame FrameIndex="360" X="186.0000" Y="186.0000">
             <EasingData Type="0" />
           </PointFrame>
         </Timeline>
@@ -87,7 +87,7 @@
           <ScaleFrame FrameIndex="0" X="1.0000" Y="1.0000">
             <EasingData Type="0" />
           </ScaleFrame>
-          <ScaleFrame FrameIndex="270" X="1.0000" Y="1.0000">
+          <ScaleFrame FrameIndex="360" X="1.0000" Y="1.0000">
             <EasingData Type="0" />
           </ScaleFrame>
         </Timeline>
@@ -95,14 +95,14 @@
           <ScaleFrame FrameIndex="0" X="0.0000" Y="0.0000">
             <EasingData Type="0" />
           </ScaleFrame>
-          <ScaleFrame FrameIndex="270" X="360.0000" Y="360.0000">
+          <ScaleFrame FrameIndex="360" X="360.0000" Y="360.0000">
             <EasingData Type="0" />
           </ScaleFrame>
         </Timeline>
       </Animation>
       <AnimationList>
-        <AnimationInfo Name="titleRotation" StartIndex="0" EndIndex="270">
-          <RenderColor A="150" R="95" G="158" B="160" />
+        <AnimationInfo Name="titleRotation" StartIndex="0" EndIndex="360">
+          <RenderColor A="255" R="95" G="158" B="160" />
         </AnimationInfo>
       </AnimationList>
       <ObjectData Name="Layer" Tag="13" ctype="GameLayerObjectData">
@@ -153,7 +153,7 @@
               <AbstractNodeData Name="num2Holder" ActionTag="499420987" Tag="45" IconVisible="False" RightMargin="876.0000" ClipAble="False" BackColorAlpha="0" ColorAngle="90.0000" Scale9Width="1" Scale9Height="1" ctype="PanelObjectData">
                 <Size X="372.0000" Y="372.0000" />
                 <Children>
-                  <AbstractNodeData Name="bg" ActionTag="1265665134" Tag="46" RotationSkewX="281.3333" RotationSkewY="281.3333" IconVisible="False" PositionPercentXEnabled="True" PositionPercentYEnabled="True" ctype="SpriteObjectData">
+                  <AbstractNodeData Name="bg" ActionTag="1265665134" Tag="46" RotationSkewX="296.0000" RotationSkewY="296.0000" IconVisible="False" PositionPercentXEnabled="True" PositionPercentYEnabled="True" ctype="SpriteObjectData">
                     <Size X="372.0000" Y="372.0000" />
                     <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
                     <Position X="186.0000" Y="186.0000" />
@@ -190,7 +190,7 @@
               <AbstractNodeData Name="num0Holder" ActionTag="479885502" ZOrder="1" Tag="48" IconVisible="False" LeftMargin="292.0000" RightMargin="584.0000" ClipAble="False" BackColorAlpha="0" ColorAngle="90.0000" Scale9Width="1" Scale9Height="1" ctype="PanelObjectData">
                 <Size X="372.0000" Y="372.0000" />
                 <Children>
-                  <AbstractNodeData Name="bg" ActionTag="2040462845" Tag="49" RotationSkewX="281.3333" RotationSkewY="281.3333" IconVisible="False" PositionPercentXEnabled="True" PositionPercentYEnabled="True" ctype="SpriteObjectData">
+                  <AbstractNodeData Name="bg" ActionTag="2040462845" Tag="49" RotationSkewX="296.0000" RotationSkewY="296.0000" IconVisible="False" PositionPercentXEnabled="True" PositionPercentYEnabled="True" ctype="SpriteObjectData">
                     <Size X="372.0000" Y="372.0000" />
                     <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
                     <Position X="186.0000" Y="186.0000" />
@@ -227,7 +227,7 @@
               <AbstractNodeData Name="num4Holder" ActionTag="-864507407" ZOrder="2" Tag="51" IconVisible="False" LeftMargin="584.0000" RightMargin="292.0000" ClipAble="False" BackColorAlpha="0" ColorAngle="90.0000" Scale9Width="1" Scale9Height="1" ctype="PanelObjectData">
                 <Size X="372.0000" Y="372.0000" />
                 <Children>
-                  <AbstractNodeData Name="bg" ActionTag="40081498" Tag="52" RotationSkewX="281.3333" RotationSkewY="281.3333" IconVisible="False" PositionPercentXEnabled="True" PositionPercentYEnabled="True" ctype="SpriteObjectData">
+                  <AbstractNodeData Name="bg" ActionTag="40081498" Tag="52" RotationSkewX="296.0000" RotationSkewY="296.0000" IconVisible="False" PositionPercentXEnabled="True" PositionPercentYEnabled="True" ctype="SpriteObjectData">
                     <Size X="372.0000" Y="372.0000" />
                     <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
                     <Position X="186.0000" Y="186.0000" />
@@ -264,7 +264,7 @@
               <AbstractNodeData Name="num8Holder" ActionTag="1052950382" ZOrder="3" Tag="54" IconVisible="False" LeftMargin="876.0000" ClipAble="False" BackColorAlpha="0" ColorAngle="90.0000" Scale9Width="1" Scale9Height="1" ctype="PanelObjectData">
                 <Size X="372.0000" Y="372.0000" />
                 <Children>
-                  <AbstractNodeData Name="bg" ActionTag="770222425" Tag="55" RotationSkewX="281.3333" RotationSkewY="281.3333" IconVisible="False" PositionPercentXEnabled="True" PositionPercentYEnabled="True" ctype="SpriteObjectData">
+                  <AbstractNodeData Name="bg" ActionTag="770222425" Tag="55" RotationSkewX="296.0000" RotationSkewY="296.0000" IconVisible="False" PositionPercentXEnabled="True" PositionPercentYEnabled="True" ctype="SpriteObjectData">
                     <Size X="372.0000" Y="372.0000" />
                     <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
                     <Position X="186.0000" Y="186.0000" />
@@ -310,7 +310,7 @@
             <EndColor A="255" R="255" G="255" B="255" />
             <ColorVector ScaleY="1.0000" />
           </AbstractNodeData>
-          <AbstractNodeData Name="iconSoundHolder" ActionTag="-1263941211" Tag="25" IconVisible="False" PositionPercentXEnabled="True" PositionPercentYEnabled="True" LeftMargin="580.4800" RightMargin="27.5200" TopMargin="841.6000" BottomMargin="22.4000" TouchEnable="True" FontSize="14" Scale9Enable="True" LeftEage="15" RightEage="15" TopEage="11" BottomEage="11" Scale9OriginX="-15" Scale9OriginY="-11" Scale9Width="30" Scale9Height="22" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="ButtonObjectData">
+          <AbstractNodeData Name="iconSoundHolder" ActionTag="-1263941211" Tag="25" IconVisible="False" PositionPercentXEnabled="True" PositionPercentYEnabled="True" LeftMargin="304.0000" RightMargin="304.0000" TopMargin="841.6000" BottomMargin="22.4000" TouchEnable="True" FontSize="14" Scale9Enable="True" LeftEage="15" RightEage="15" TopEage="11" BottomEage="11" Scale9OriginX="-15" Scale9OriginY="-11" Scale9Width="30" Scale9Height="22" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="ButtonObjectData">
             <Size X="160.0000" Y="160.0000" />
             <Children>
               <AbstractNodeData Name="imageSoundOn" ActionTag="-1370330611" Tag="26" IconVisible="False" PositionPercentXEnabled="True" PositionPercentYEnabled="True" ctype="SpriteObjectData">
@@ -337,35 +337,10 @@
               </AbstractNodeData>
             </Children>
             <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
-            <Position X="660.4800" Y="102.4000" />
+            <Position X="384.0000" Y="102.4000" />
             <Scale ScaleX="0.5000" ScaleY="0.5000" />
             <CColor A="255" R="255" G="255" B="255" />
-            <PrePosition X="0.8600" Y="0.1000" />
-            <PreSize X="0.2083" Y="0.1563" />
-            <TextColor A="255" R="65" G="65" B="70" />
-            <OutlineColor A="255" R="255" G="0" B="0" />
-            <ShadowColor A="255" R="110" G="110" B="110" />
-          </AbstractNodeData>
-          <AbstractNodeData Name="iconResetHolder" ActionTag="-697903587" Tag="41" IconVisible="False" PositionPercentXEnabled="True" PositionPercentYEnabled="True" LeftMargin="27.5200" RightMargin="580.4800" TopMargin="841.6000" BottomMargin="22.4000" TouchEnable="True" FontSize="14" Scale9Enable="True" LeftEage="15" RightEage="15" TopEage="11" BottomEage="11" Scale9OriginX="-15" Scale9OriginY="-11" Scale9Width="30" Scale9Height="22" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="ButtonObjectData">
-            <Size X="160.0000" Y="160.0000" />
-            <Children>
-              <AbstractNodeData Name="image" ActionTag="-478052231" Tag="42" IconVisible="False" PositionPercentXEnabled="True" PositionPercentYEnabled="True" ctype="SpriteObjectData">
-                <Size X="160.0000" Y="160.0000" />
-                <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
-                <Position X="80.0000" Y="80.0000" />
-                <Scale ScaleX="1.0000" ScaleY="1.0000" />
-                <CColor A="255" R="255" G="255" B="255" />
-                <PrePosition X="0.5000" Y="0.5000" />
-                <PreSize X="1.0000" Y="1.0000" />
-                <FileData Type="Normal" Path="img/icons/reset.png" Plist="" />
-                <BlendFunc Src="1" Dst="771" />
-              </AbstractNodeData>
-            </Children>
-            <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
-            <Position X="107.5200" Y="102.4000" />
-            <Scale ScaleX="0.5000" ScaleY="0.5000" />
-            <CColor A="255" R="255" G="255" B="255" />
-            <PrePosition X="0.1400" Y="0.1000" />
+            <PrePosition X="0.5000" Y="0.1000" />
             <PreSize X="0.2083" Y="0.1563" />
             <TextColor A="255" R="65" G="65" B="70" />
             <OutlineColor A="255" R="255" G="0" B="0" />

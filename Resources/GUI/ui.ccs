@@ -27,7 +27,8 @@
             <Image Name="title-8bg.png" />
             <Image Name="title-8num.png" />
           </Folder>
-          <Image Name="btnBorder.png" />
+          <Image Name="buttonBorder.png" />
+          <Image Name="glow.png" />
           <Image Name="tile0.png" />
           <Image Name="tile1024.png" />
           <Image Name="tile128.png" />
@@ -41,6 +42,7 @@
           <Image Name="tile512.png" />
           <Image Name="tile64.png" />
           <Image Name="tile8.png" />
+          <Image Name="tileBG.png" />
           <Image Name="title.png" />
         </Folder>
         <Folder Name="sounds">
@@ -56,7 +58,6 @@
           <Project Name="gameplayScene.csd" Type="Layer" />
           <Project Name="menuScene.csd" Type="Layer" />
           <Project Name="tile.csd" Type="Layer" />
-          <Project Name="gameOverScene.csd" Type="Layer" />
         </Folder>
       </RootFolder>
     </Group>

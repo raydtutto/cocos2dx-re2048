@@ -5,6 +5,7 @@
 #include "TileWidget.h"
 
 #include "cocostudio/ActionTimeline/CSLoader.h"
+#include "cocostudio/ActionTimeline/CCActionTimeline.h"
 #include "ui/UIButton.h"
 #include "ui/UIListView.h"
 #include "utils/NodeUtils.h"
@@ -58,7 +59,7 @@ bool GameplayScene::init() {
     }
 
     // Background color
-    const Color4B colorBg = Color4B(40, 40, 45, 255);
+    const auto colorBg = Color4B(40, 40, 45, 255);
     const auto layerColor = LayerColor::create(colorBg);
     addChild(layerColor);
 
@@ -69,10 +70,11 @@ bool GameplayScene::init() {
         return false;
     }
 
-    if (auto gameboard = NodeUtils::getNodeByName(mRoot, "gameboard")) {
-        auto visibleSize = gameboard->getContentSize();
-        auto boardBg = Sprite::create("img/boardBg.png");
-        auto boardSize = boardBg->getContentSize();
+    // Create gameboard
+    if (const auto gameboard = NodeUtils::getNodeByName(mRoot, "gameboard")) {
+        const auto visibleSize = gameboard->getContentSize();
+        const auto boardBg = Sprite::create("img/boardBg.png");
+        const auto boardSize = boardBg->getContentSize();
         boardBg->setPosition(visibleSize.width / 2, visibleSize.height / 2);
         boardBg->setScale(std::min(visibleSize.width / boardSize.width, visibleSize.height / boardSize.height));
         gameboard->addChild(boardBg);
@@ -93,11 +95,10 @@ bool GameplayScene::init() {
     }
 
     // Menu button
-    if (auto menuButton = dynamic_cast<CustomButton*>(NodeUtils::getNodeByName(mRoot, "menuBtn"))) {
-        CCLOG("Back to menu.");
+    if (const auto menuButton = dynamic_cast<CustomButton*>(NodeUtils::getNodeByName(mRoot, "menuBtn"))) {
         menuButton->addClickEventListener([](cocos2d::Ref*) {
             CCLOG("Back to menu.");
-            auto audio = cocos2d::UserDefault::getInstance()->getBoolForKey("audioEnabled", true);
+            const auto audio = cocos2d::UserDefault::getInstance()->getBoolForKey("audioEnabled", true);
             if (audio) {
                 CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/button.ogg", false, 1.0f, 1.0f, 1.0f);
             }
@@ -105,6 +106,18 @@ bool GameplayScene::init() {
         });
     } else {
         return false;
+    }
+
+    // Reset button
+    if (const auto resetButton = dynamic_cast<CustomButton*>(NodeUtils::getNodeByName(mRoot, "resetBtn"))) {
+        resetButton->addClickEventListener([&](cocos2d::Ref*) {
+            CCLOG("Reset board.");
+            const auto audio = cocos2d::UserDefault::getInstance()->getBoolForKey("audioEnabled", true);
+            if (audio) {
+                CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/button.ogg", false, 1.0f, 1.0f, 1.0f);
+            }
+            reinitBoard();
+        });
     }
 
 
@@ -140,7 +153,7 @@ void GameplayScene::initListeners() {
         // Let up trigger
         mTouchListener->onTouchEnded = [=](Touch *touch, Event *event) {
             auto dir = eDirection::UNDEFINED;
-            auto loc = touch->getLocation();
+            const auto loc = touch->getLocation();
 
             if (loc.x > mInitTouchPos.x + touchSwipeThreshold) {
                 dir = eDirection::RIGHT;
@@ -193,15 +206,15 @@ void GameplayScene::generateTile(bool animate) {
         return;
     }
 
-    auto tile = TileWidget::create(2);
+    const auto tile = TileWidget::create(2);
     mBoard->addChild(tile);
     mTileGrid[pos] = tile;
     tile->setBoardPos(pos);
 }
 
-void GameplayScene::onMove(eDirection dir) {
-    if (dir == eDirection::UNDEFINED) {
-        CCLOGERROR("Undefined direction.");
+void GameplayScene::onMove(const eDirection dir) {
+    if (dir == eDirection::UNDEFINED || mGameOver) {
+        CCLOGERROR("Cannot move tiles.");
         return;
     }
 
@@ -287,14 +300,16 @@ void GameplayScene::onMove(eDirection dir) {
         }), nullptr);
         runAction(seq);
     } else {
-        if (checkUnsolvableBoard()) {
+        // if (checkUnsolvableBoard()) {
+        if (true) {
             CCLOG("Game over!");
+            gameOver();
         }
     }
 }
 
 void GameplayScene::playSound(const int num) {
-    auto audio = cocos2d::UserDefault::getInstance()->getBoolForKey("audioEnabled", true);
+    const auto audio = cocos2d::UserDefault::getInstance()->getBoolForKey("audioEnabled", true);
     if (!audio) {
         return;
     }
@@ -329,11 +344,30 @@ void GameplayScene::playSound(const int num) {
     }
 }
 
+void GameplayScene::gameOver() {
+    mGameOver = true;
+
+    const auto gameOverHolder = NodeUtils::getNodeByName(mRoot, "gameOverHolder");
+    gameOverHolder->setVisible(true);
+    gameOverHolder->setOpacity(0);
+
+    // Fade in animation
+    const auto fadeIn = cocos2d::FadeIn::create(.2f);
+    const auto fadeOut = cocos2d::FadeOut::create(.2f);
+    gameOverHolder->runAction(fadeIn);
+
+    // Timeline animation
+    const auto gameOverTimeline = CSLoader::createTimeline("widgets/gameplayScene.csb");
+    mRoot->runAction(gameOverTimeline);
+    gameOverTimeline->play("gameOverFadeIn", false);
+}
+
 std::pair<int, int> GameplayScene::matchTileRow(std::vector<TileGrid::iterator>& buffer) {
     int moved = 0;
+
     // Get pointers
     std::vector<TileWidget*> list;
-    for (auto item : buffer) {
+    for (const auto item : buffer) {
         if (item->second != nullptr) {
             list.push_back(item->second);
         }
@@ -391,7 +425,7 @@ void GameplayScene::updateScore(const int num) {
     }
 
     // Update user score
-    if (auto bestScoreLabel = dynamic_cast<cocos2d::ui::Text*>(NodeUtils::getNodeByName(mRoot, "bestScore"))) {
+    if (const auto bestScoreLabel = dynamic_cast<cocos2d::ui::Text*>(NodeUtils::getNodeByName(mRoot, "bestScore"))) {
         int bestScore = cocos2d::UserDefault::getInstance()->getIntegerForKey("best_score", 0);
 
         // Update best score
@@ -402,9 +436,9 @@ void GameplayScene::updateScore(const int num) {
         bestScoreLabel->setString(std::to_string( bestScore));
 
         // Center the best score label
-        if (auto bestScoreHolder = NodeUtils::getNodeByName(mRoot, "bestScoreHolder")) {
+        if (const auto bestScoreHolder = NodeUtils::getNodeByName(mRoot, "bestScoreHolder")) {
             float totalWidth = 0;
-            for (auto child : bestScoreHolder->getChildren()) {
+            for (const auto child : bestScoreHolder->getChildren()) {
                 totalWidth += child->getContentSize().width;
             }
             bestScoreHolder->setContentSize(cocos2d::Size(totalWidth, bestScoreHolder->getContentSize().height));
