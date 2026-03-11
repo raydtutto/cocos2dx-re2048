@@ -12,7 +12,7 @@ public:
     bool init() override;
 private:
     void initListeners();
-    bool toggleAudio();
+    static bool toggleAudio();
 
     cocos2d::Node* mRoot{nullptr};
     cocos2d::EventListenerKeyboard* mKeyboardListener = nullptr;

@@ -3,7 +3,6 @@
 #include "GameplayScene.h"
 #include "CustomButton.h"
 #include "cocostudio/ActionTimeline/CCActionTimeline.h"
-#include "cocostudio/ActionTimeline/CCActionTimelineCache.h"
 #include "cocostudio/ActionTimeline/CSLoader.h"
 #include "utils/NodeUtils.h"
 #include "ui/UIText.h"
@@ -22,7 +21,6 @@ MenuScene* MenuScene::create() {
         return pRet;
     } else {
         delete pRet;
-        pRet = nullptr;
         return nullptr;
     }
 }
@@ -108,7 +106,7 @@ bool MenuScene::init() {
             iconSoundOnImage->setVisible(audioEnabled);
             iconSoundOffImage->setVisible(!audioEnabled);
         }
-        iconSoundHolder->addTouchEventListener([&](Ref* obj, cocos2d::ui::Widget::TouchEventType type) {
+        iconSoundHolder->addTouchEventListener([this](Ref* obj, cocos2d::ui::Widget::TouchEventType type) {
             switch (type) {
                 case cocos2d::ui::Widget::TouchEventType::BEGAN:
                 case ui::Widget::TouchEventType::MOVED:

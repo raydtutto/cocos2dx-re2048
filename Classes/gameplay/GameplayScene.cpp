@@ -16,8 +16,8 @@ USING_NS_CC;
 using namespace cocos2d;
 
 namespace {
-    const int _gridSizeX = 4;
-    const int _gridSizeY = 4;
+    constexpr int _gridSizeX = 4;
+    constexpr int _gridSizeY = 4;
     auto touchSwipeThreshold = 70.f;
 }
 
@@ -36,7 +36,6 @@ GameplayScene* GameplayScene::create() {
         return pRet;
     } else {
         delete pRet;
-        pRet = nullptr;
         return nullptr;
     }
 }
@@ -84,9 +83,6 @@ bool GameplayScene::init() {
     // Create score
     if (auto gameScore = dynamic_cast<cocos2d::ui::Text*>(NodeUtils::getNodeByName(mRoot, "score"))) {
         gameScore->setString("0");
-
-        // Access user default
-        auto userDefaults = cocos2d::UserDefault::getInstance();
         updateScore(mGameScore);
     } else {
         return false;
@@ -160,14 +156,14 @@ void GameplayScene::initListeners() {
     mTouchListener = EventListenerTouchOneByOne::create(); // Create event listener
     if (mTouchListener) {
         // Push down trigger
-        mTouchListener->onTouchBegan = [this](Touch *touch, Event *event) {
+        mTouchListener->onTouchBegan = [this](Touch* touch, Event* event) {
             CCLOG("Touch BEGAN");
             mInitTouchPos = touch->getStartLocation();
             return true;
         };
 
         // Let up trigger
-        mTouchListener->onTouchEnded = [=](Touch *touch, Event *event) {
+        mTouchListener->onTouchEnded = [=](Touch* touch, Event* event) {
             auto dir = eDirection::UNDEFINED;
             const auto loc = touch->getLocation();
 
@@ -253,7 +249,7 @@ std::pair<int, int> GameplayScene::getRandomPos() {
     return buffer[dist(rd)];
 }
 
-void GameplayScene::generateTile(bool animate) {
+void GameplayScene::generateTile() {
     auto pos = getRandomPos();
     if (pos == std::pair<int, int>{-1, -1}) {
         CCLOGERROR("No empty space on the grid.");
@@ -263,7 +259,7 @@ void GameplayScene::generateTile(bool animate) {
     const auto tile = TileWidget::create(2);
     mBoard->addChild(tile);
     mTileGrid[pos] = tile;
-    tile->setBoardPos(pos, animate);
+    tile->setBoardPos(pos, false);
 
     // Scale animation
     tile->setScale(.9f);
@@ -283,7 +279,7 @@ void GameplayScene::onMove(const eDirection dir) {
 
     mMoveTimer = 0.f;
 
-    auto findCell = [this](std::pair<int, int> key) {
+    auto findCell = [this](const std::pair<int, int>& key) {
         return mTileGrid.find(key);
     };
 
@@ -420,8 +416,7 @@ void GameplayScene::gameOver() {
     gameOverHolder->runAction(cocos2d::FadeIn::create(.2f));
 
     // Load timeline animation
-    const auto timeline = CSLoader::createTimeline("widgets/gameplayScene.csb");
-    if (timeline) {
+    if (const auto timeline = CSLoader::createTimeline("widgets/gameplayScene.csb")) {
         mRoot->runAction(timeline);
         timeline->play("gameOverFadeIn", false);
     }
@@ -440,8 +435,7 @@ void GameplayScene::gameOver() {
                 CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/button.ogg", false, 1.0f, 1.0f, 1.0f);
 
             // Sequence animation
-            const auto timeline = CSLoader::createTimeline("widgets/gameplayScene.csb");
-            if (timeline) {
+            if (const auto timeline = CSLoader::createTimeline("widgets/gameplayScene.csb")) {
                 mRoot->runAction(timeline);
                 timeline->play("gameOverFadeOut", false);
 

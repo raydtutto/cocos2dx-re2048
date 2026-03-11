@@ -28,7 +28,7 @@ private:
     void initListeners();
     void reinitBoard();
     std::pair<int, int> getRandomPos();
-    void generateTile(bool animate = false);
+    void generateTile();
     void onMove(eDirection dir);
     std::pair<int, int> matchTileRow(std::vector<TileGrid::iterator>& buffer); // <1 moved cells, 2 max merged number>
     void updateScore(int num);
