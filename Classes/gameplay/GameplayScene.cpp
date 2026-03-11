@@ -103,7 +103,7 @@ bool GameplayScene::init() {
 
     // Reset button
     if (const auto resetButton = dynamic_cast<CustomButton*>(NodeUtils::getNodeByName(mRoot, "resetBtn"))) {
-        resetButton->addClickEventListener([&](cocos2d::Ref*) {
+        resetButton->addClickEventListener([this](cocos2d::Ref*) {
             CCLOG("Reset board.");
             if (cocos2d::UserDefault::getInstance()->getBoolForKey("audioEnabled", true)) {
                 CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/button.ogg", false, 1.0f, 1.0f, 1.0f);
@@ -156,14 +156,14 @@ void GameplayScene::initListeners() {
     mTouchListener = EventListenerTouchOneByOne::create(); // Create event listener
     if (mTouchListener) {
         // Push down trigger
-        mTouchListener->onTouchBegan = [this](Touch* touch, Event* event) {
+        mTouchListener->onTouchBegan = [this](const Touch* touch, Event* event) {
             CCLOG("Touch BEGAN");
             mInitTouchPos = touch->getStartLocation();
             return true;
         };
 
         // Let up trigger
-        mTouchListener->onTouchEnded = [=](Touch* touch, Event* event) {
+        mTouchListener->onTouchEnded = [this](const Touch* touch, Event* event) {
             auto dir = eDirection::UNDEFINED;
             const auto loc = touch->getLocation();
 
