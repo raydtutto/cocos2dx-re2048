@@ -26,6 +26,7 @@ public:
 
 private:
     void initListeners();
+    void reinitBoard();
     std::pair<int, int> getRandomPos();
     void generateTile(bool animate = false);
     void onMove(eDirection dir);
@@ -45,10 +46,12 @@ private:
     cocos2d::Node* mBoard{nullptr};
     TileGrid mTileGrid;
     cocos2d::EventListenerTouchOneByOne* mTouchListener = nullptr;
+    cocos2d::EventListenerKeyboard* mKeyboardListener = nullptr;
     cocos2d::Vec2 mInitTouchPos;
     float mMoveTimer{0.f};
     int mGameScore{0};
     bool mGameOver = false;
+    bool mIsRestarting{false};
 };
 
 

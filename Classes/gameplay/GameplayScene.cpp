@@ -6,7 +6,6 @@
 
 #include "cocostudio/ActionTimeline/CSLoader.h"
 #include "cocostudio/ActionTimeline/CCActionTimeline.h"
-#include "ui/UIButton.h"
 #include "ui/UIListView.h"
 #include "utils/NodeUtils.h"
 #include "ui/UIText.h"
@@ -54,9 +53,8 @@ GameplayScene::~GameplayScene() {
 }
 
 bool GameplayScene::init() {
-    if (!Scene::init()) {
+    if (!Scene::init())
         return false;
-    }
 
     // Background color
     const auto colorBg = Color4B(40, 40, 45, 255);
@@ -98,8 +96,7 @@ bool GameplayScene::init() {
     if (const auto menuButton = dynamic_cast<CustomButton*>(NodeUtils::getNodeByName(mRoot, "menuBtn"))) {
         menuButton->addClickEventListener([](cocos2d::Ref*) {
             CCLOG("Back to menu.");
-            const auto audio = cocos2d::UserDefault::getInstance()->getBoolForKey("audioEnabled", true);
-            if (audio) {
+            if (cocos2d::UserDefault::getInstance()->getBoolForKey("audioEnabled", true)) {
                 CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/button.ogg", false, 1.0f, 1.0f, 1.0f);
             }
             Director::getInstance()->replaceScene(MenuScene::create());
@@ -112,35 +109,54 @@ bool GameplayScene::init() {
     if (const auto resetButton = dynamic_cast<CustomButton*>(NodeUtils::getNodeByName(mRoot, "resetBtn"))) {
         resetButton->addClickEventListener([&](cocos2d::Ref*) {
             CCLOG("Reset board.");
-            const auto audio = cocos2d::UserDefault::getInstance()->getBoolForKey("audioEnabled", true);
-            if (audio) {
+            if (cocos2d::UserDefault::getInstance()->getBoolForKey("audioEnabled", true)) {
                 CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/button.ogg", false, 1.0f, 1.0f, 1.0f);
             }
             reinitBoard();
         });
     }
 
-
-    // Tiles
-    generateTile();
-    generateTile();
-    generateTile();
-    generateTile();
-    generateTile();
-    generateTile();
-    generateTile();
-
-    // Event listener
+    reinitBoard();
     initListeners();
     scheduleUpdate();
 
     return true;
 }
 
-void GameplayScene::initListeners() {
-    if (mTouchListener) {
-        Director::getInstance()->getEventDispatcher()->removeEventListener(mTouchListener);
+void GameplayScene::reinitBoard() {
+    mGameOver = false;
+    mIsRestarting = false;
+
+    const auto gameOverHolder = NodeUtils::getNodeByName(mRoot, "gameOverHolder");
+    gameOverHolder->setVisible(false);
+
+    for (int x = 0; x < _gridSizeX; ++x) {
+        for (int y = 0; y < _gridSizeY; ++y) {
+            if (mTileGrid[{x, y}] != nullptr) {
+                mTileGrid[{x, y}]->removeFromParentAndCleanup(true);
+            }
+        }
     }
+    mTileGrid.clear();
+
+    // Reset score
+    mGameScore = 0;
+    updateScore(0);
+
+    if (const auto bestScoreHolder = dynamic_cast<cocos2d::ui::ListView*>(NodeUtils::getNodeByName(mRoot, "bestScoreHolder")))
+        bestScoreHolder->setScrollBarEnabled(false);
+
+    mMoveTimer = TileWidget::getTimeDelay();
+
+    debugGenerateUnsolvableBoard();
+    // generateTile();
+    // generateTile();
+}
+
+void GameplayScene::initListeners() {
+    if (mTouchListener)
+        Director::getInstance()->getEventDispatcher()->removeEventListener(mTouchListener);
+
     mTouchListener = EventListenerTouchOneByOne::create(); // Create event listener
     if (mTouchListener) {
         // Push down trigger
@@ -177,6 +193,46 @@ void GameplayScene::initListeners() {
         Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(mTouchListener, this);
         CCLOG("Event listener created.");
     }
+
+    if (mKeyboardListener)
+        Director::getInstance()->getEventDispatcher()->removeEventListener(mKeyboardListener);
+
+    mKeyboardListener = cocos2d::EventListenerKeyboard::create();
+    if (mKeyboardListener) {
+        mKeyboardListener->onKeyReleased = [this](EventKeyboard::KeyCode keyCode, auto /*event*/) {
+            if (mGameOver)
+                return;
+
+            switch (keyCode) {
+                case EventKeyboard::KeyCode::KEY_UP_ARROW:
+                    onMove(eDirection::UP);
+                    break;
+                case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
+                    onMove(eDirection::DOWN);
+                    break;
+                case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
+                    onMove(eDirection::LEFT);
+                    break;
+                case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
+                    onMove(eDirection::RIGHT);
+                    break;
+                case EventKeyboard::KeyCode::KEY_R:
+                    reinitBoard();
+                    break;
+                case EventKeyboard::KeyCode::KEY_ESCAPE: {
+                    CCLOG("Back to menu.");
+                    if (cocos2d::UserDefault::getInstance()->getBoolForKey("audioEnabled", true))
+                        CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/button.ogg", false, 1.0f, 1.0f, 1.0f);
+
+                    Director::getInstance()->replaceScene(MenuScene::create());
+                    break;
+                }
+                default:
+                    break;
+            }
+        };
+        Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(mKeyboardListener, this);
+    }
 }
 
 std::pair<int, int> GameplayScene::getRandomPos() {
@@ -184,14 +240,12 @@ std::pair<int, int> GameplayScene::getRandomPos() {
     std::vector<std::pair<int, int> > buffer;
     for (int x = 0; x < _gridSizeX; ++x) {
         for (int y = 0; y < _gridSizeY; ++y) {
-            if (mTileGrid[{x, y}] == nullptr) {
+            if (mTileGrid[{x, y}] == nullptr)
                 buffer.emplace_back(std::pair<int, int>(x, y));
-            }
         }
     }
-    if (buffer.empty()) {
+    if (buffer.empty())
         return {-1, -1};
-    }
 
     // Pick random place from the store
     std::random_device rd;
@@ -209,21 +263,32 @@ void GameplayScene::generateTile(bool animate) {
     const auto tile = TileWidget::create(2);
     mBoard->addChild(tile);
     mTileGrid[pos] = tile;
-    tile->setBoardPos(pos);
+    tile->setBoardPos(pos, animate);
+
+    // Scale animation
+    tile->setScale(.9f);
+    const auto scaleTo = cocos2d::ScaleTo::create(.8f, 1.f);
+    const auto scaleEaseOut = EaseElasticOut::create(scaleTo);
+    tile->runAction(scaleEaseOut);
 }
 
 void GameplayScene::onMove(const eDirection dir) {
-    if (dir == eDirection::UNDEFINED || mGameOver) {
+    if (dir == eDirection::UNDEFINED || mGameOver || mIsRestarting) {
         CCLOGERROR("Cannot move tiles.");
         return;
     }
 
-    if (mMoveTimer < TileWidget::getTimeDelay()) {
+    if (mMoveTimer < TileWidget::getTimeDelay())
         return;
-    }
+
     mMoveTimer = 0.f;
 
-    // for each row/column 0[] 1[X] 2[] 3[X] -> 0[X] 1[X] 2[] 3[]
+    auto findCell = [this](std::pair<int, int> key) {
+        return mTileGrid.find(key);
+    };
+
+    int movedCells = 0;
+    int numMergedMax = 0;
 
     if (dir == eDirection::DOWN) {
         for (int x = 0; x < _gridSizeX; ++x) {
@@ -254,13 +319,6 @@ void GameplayScene::onMove(const eDirection dir) {
             numMergedMax = (numMergedMax > result.second) ? numMergedMax : result.second;
         }
     }
-
-    // UP down->up
-    // create arrays for each column
-    // - - - -
-    // - - - -
-    // - - - -
-    // - X - -
 
     if (dir == eDirection::LEFT) {
         for (int y = 0; y < _gridSizeY; ++y) {
@@ -300,8 +358,7 @@ void GameplayScene::onMove(const eDirection dir) {
         }), nullptr);
         runAction(seq);
     } else {
-        // if (checkUnsolvableBoard()) {
-        if (true) {
+        if (checkUnsolvableBoard()) {
             CCLOG("Game over!");
             gameOver();
         }
@@ -309,10 +366,9 @@ void GameplayScene::onMove(const eDirection dir) {
 }
 
 void GameplayScene::playSound(const int num) {
-    const auto audio = cocos2d::UserDefault::getInstance()->getBoolForKey("audioEnabled", true);
-    if (!audio) {
+    const auto audioEnabled = cocos2d::UserDefault::getInstance()->getBoolForKey("audioEnabled", true);
+    if (!audioEnabled)
         return;
-    }
 
     switch (num) {
         case 4:
@@ -345,21 +401,82 @@ void GameplayScene::playSound(const int num) {
 }
 
 void GameplayScene::gameOver() {
+    if (mGameOver)
+        return;
     mGameOver = true;
 
     const auto gameOverHolder = NodeUtils::getNodeByName(mRoot, "gameOverHolder");
+    if (!gameOverHolder) {
+        CCLOGERROR("GameOverHolder node lost.");
+        return;
+    }
+
+    if (const auto buttonHolder = dynamic_cast<cocos2d::ui::ListView*>(NodeUtils::getNodeByName(mRoot, "buttonHolder")))
+        buttonHolder->setScrollBarEnabled(false);
+
     gameOverHolder->setVisible(true);
     gameOverHolder->setOpacity(0);
+    gameOverHolder->stopAllActions();
+    gameOverHolder->runAction(cocos2d::FadeIn::create(.2f));
 
-    // Fade in animation
-    const auto fadeIn = cocos2d::FadeIn::create(.2f);
-    const auto fadeOut = cocos2d::FadeOut::create(.2f);
-    gameOverHolder->runAction(fadeIn);
+    // Load timeline animation
+    const auto timeline = CSLoader::createTimeline("widgets/gameplayScene.csb");
+    if (timeline) {
+        mRoot->runAction(timeline);
+        timeline->play("gameOverFadeIn", false);
+    }
 
-    // Timeline animation
-    const auto gameOverTimeline = CSLoader::createTimeline("widgets/gameplayScene.csb");
-    mRoot->runAction(gameOverTimeline);
-    gameOverTimeline->play("gameOverFadeIn", false);
+    const auto audioEnabled = cocos2d::UserDefault::getInstance()->getBoolForKey("audioEnabled", true);
+
+    // Restart button
+    if (const auto restartButton = dynamic_cast<CustomButton*>(NodeUtils::getNodeByName(mRoot, "restartBtnGameOver"))) {
+        restartButton->addClickEventListener([this, audioEnabled, gameOverHolder](cocos2d::Ref*) {
+            if (mIsRestarting)
+                return;
+
+            mIsRestarting = true;
+
+            if (audioEnabled)
+                CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/button.ogg", false, 1.0f, 1.0f, 1.0f);
+
+            // Sequence animation
+            const auto timeline = CSLoader::createTimeline("widgets/gameplayScene.csb");
+            if (timeline) {
+                mRoot->runAction(timeline);
+                timeline->play("gameOverFadeOut", false);
+
+                Vector<FiniteTimeAction *> list;
+                list.pushBack(cocos2d::DelayTime::create(.5f));
+                list.pushBack(cocos2d::CallFunc::create([this]() {
+                    this->reinitBoard();
+                    this->mGameOver = false;
+                }));
+                list.pushBack(cocos2d::EaseOut::create(cocos2d::FadeOut::create(.2f), .2f));
+                list.pushBack(cocos2d::CallFunc::create([gameOverHolder]() {
+                    gameOverHolder->setVisible(false);
+                }));
+                gameOverHolder->runAction(Sequence::create(list));
+            } else {
+                this->reinitBoard();
+                this->mGameOver = false;
+                gameOverHolder->setVisible(false);
+            }
+        });
+    }
+
+    // Menu button
+    if (const auto menuButton = dynamic_cast<CustomButton*>(NodeUtils::getNodeByName(mRoot, "menuBtnGameOver"))) {
+        menuButton->addClickEventListener([this, audioEnabled](cocos2d::Ref*) {
+            if (mIsRestarting)
+                return;
+            CCLOG("Back to menu.");
+
+            if (audioEnabled)
+                CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/button.ogg", false, 1.0f, 1.0f, 1.0f);
+
+            Director::getInstance()->replaceScene(MenuScene::create());
+        });
+    }
 }
 
 std::pair<int, int> GameplayScene::matchTileRow(std::vector<TileGrid::iterator>& buffer) {
@@ -368,9 +485,8 @@ std::pair<int, int> GameplayScene::matchTileRow(std::vector<TileGrid::iterator>&
     // Get pointers
     std::vector<TileWidget*> list;
     for (const auto item : buffer) {
-        if (item->second != nullptr) {
+        if (item->second != nullptr)
             list.push_back(item->second);
-        }
     }
 
     // Merge elements in the list
@@ -385,7 +501,8 @@ std::pair<int, int> GameplayScene::matchTileRow(std::vector<TileGrid::iterator>&
 
             // Merge
             list[i]->setNumber(list[i]->getNumber()*2);
-            list[i + 1]->removeFromParentAndCleanup(true);
+            // list[i + 1]->removeFromParentAndCleanup(true);
+            list[i + 1]->removeWidget();
             list[i + 1] = nullptr;
             merged.push_back(list[i]);
             i++; // Skip removed element
@@ -482,22 +599,19 @@ void GameplayScene::debugGenerateUnsolvableBoard() {
 bool GameplayScene::checkUnsolvableBoard() {
     for (int x = 0; x < _gridSizeX; ++x) {
         for (int y = 0; y < _gridSizeY; ++y) {
-            if (mTileGrid[{x, y}] == nullptr) {
+            if (mTileGrid[{x, y}] == nullptr)
                 return false;
-            }
 
             int nextX = x + 1;
             if (nextX <= _gridSizeX && mTileGrid[{nextX, y}] != nullptr) {
-                if (mTileGrid[{x, y}]->getNumber() == mTileGrid[{nextX, y}]->getNumber()) {
+                if (mTileGrid[{x, y}]->getNumber() == mTileGrid[{nextX, y}]->getNumber())
                     return false;
-                }
             }
 
             int nextY = y + 1;
             if (nextY <= _gridSizeY && mTileGrid[{x, nextY}] != nullptr) {
-                if (mTileGrid[{x, y}]->getNumber() == mTileGrid[{x, nextY}]->getNumber()) {
+                if (mTileGrid[{x, y}]->getNumber() == mTileGrid[{x, nextY}]->getNumber())
                     return false;
-                }
             }
         }
     }

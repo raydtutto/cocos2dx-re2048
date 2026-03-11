@@ -2,7 +2,7 @@
   <PropertyGroup Name="gameplayScene" Type="Layer" ID="6dfb0e8b-71e4-4455-9114-24b5cbf26b48" Version="3.10.0.0" />
   <Content ctype="GameProjectContent">
     <Content>
-      <Animation Duration="121" Speed="1.0000">
+      <Animation Duration="91" Speed="1.0000">
         <Timeline ActionTag="-750746071" Property="Position">
           <PointFrame FrameIndex="0" X="768.0000" Y="1024.0000">
             <EasingData Type="23" />
@@ -13,7 +13,7 @@
           <PointFrame FrameIndex="61" X="768.0000" Y="1024.0000">
             <EasingData Type="25" />
           </PointFrame>
-          <PointFrame FrameIndex="121" X="768.0000" Y="1024.0000">
+          <PointFrame FrameIndex="91" X="768.0000" Y="1024.0000">
             <EasingData Type="25" />
           </PointFrame>
         </Timeline>
@@ -27,7 +27,7 @@
           <ScaleFrame FrameIndex="61" X="1.0000" Y="1.0000">
             <EasingData Type="25" />
           </ScaleFrame>
-          <ScaleFrame FrameIndex="121" X="0.4000" Y="0.4000">
+          <ScaleFrame FrameIndex="91" X="0.4000" Y="0.4000">
             <EasingData Type="25" />
           </ScaleFrame>
         </Timeline>
@@ -41,7 +41,7 @@
           <ScaleFrame FrameIndex="61" X="0.0000" Y="0.0000">
             <EasingData Type="25" />
           </ScaleFrame>
-          <ScaleFrame FrameIndex="121" X="0.0000" Y="0.0000">
+          <ScaleFrame FrameIndex="91" X="0.0000" Y="0.0000">
             <EasingData Type="25" />
           </ScaleFrame>
         </Timeline>
@@ -55,7 +55,7 @@
           <PointFrame FrameIndex="61" X="768.0000" Y="1024.0000">
             <EasingData Type="25" />
           </PointFrame>
-          <PointFrame FrameIndex="121" X="768.0000" Y="1024.0000">
+          <PointFrame FrameIndex="91" X="768.0000" Y="1024.0000">
             <EasingData Type="25" />
           </PointFrame>
         </Timeline>
@@ -69,7 +69,7 @@
           <ScaleFrame FrameIndex="61" X="1.0000" Y="1.0000">
             <EasingData Type="25" />
           </ScaleFrame>
-          <ScaleFrame FrameIndex="121" X="0.9000" Y="0.9000">
+          <ScaleFrame FrameIndex="91" X="0.9000" Y="0.9000">
             <EasingData Type="25" />
           </ScaleFrame>
         </Timeline>
@@ -83,31 +83,31 @@
           <ScaleFrame FrameIndex="61" X="0.0000" Y="0.0000">
             <EasingData Type="25" />
           </ScaleFrame>
-          <ScaleFrame FrameIndex="121" X="-15.0000" Y="-15.0000">
+          <ScaleFrame FrameIndex="91" X="-15.0000" Y="-15.0000">
             <EasingData Type="25" />
           </ScaleFrame>
         </Timeline>
         <Timeline ActionTag="-444239083" Property="Position">
-          <PointFrame FrameIndex="113" X="214.0000" Y="408.0000">
-            <EasingData Type="1" />
+          <PointFrame FrameIndex="83" X="214.0000" Y="408.0000">
+            <EasingData Type="2" />
           </PointFrame>
-          <PointFrame FrameIndex="121" X="214.0000" Y="408.0000">
+          <PointFrame FrameIndex="91" X="214.0000" Y="408.0000">
             <EasingData Type="1" />
           </PointFrame>
         </Timeline>
         <Timeline ActionTag="-444239083" Property="Scale">
-          <ScaleFrame FrameIndex="113" X="1.0000" Y="1.0000">
-            <EasingData Type="1" />
+          <ScaleFrame FrameIndex="83" X="1.0000" Y="1.0000">
+            <EasingData Type="2" />
           </ScaleFrame>
-          <ScaleFrame FrameIndex="121" X="1.0000" Y="1.0000">
+          <ScaleFrame FrameIndex="91" X="1.0000" Y="1.0000">
             <EasingData Type="1" />
           </ScaleFrame>
         </Timeline>
         <Timeline ActionTag="-444239083" Property="RotationSkew">
-          <ScaleFrame FrameIndex="113" X="0.0000" Y="0.0000">
-            <EasingData Type="1" />
+          <ScaleFrame FrameIndex="83" X="0.0000" Y="0.0000">
+            <EasingData Type="2" />
           </ScaleFrame>
-          <ScaleFrame FrameIndex="121" X="0.0000" Y="0.0000">
+          <ScaleFrame FrameIndex="91" X="0.0000" Y="0.0000">
             <EasingData Type="1" />
           </ScaleFrame>
         </Timeline>
@@ -118,10 +118,10 @@
           <PointFrame FrameIndex="8" X="768.0000" Y="1024.0000">
             <EasingData Type="2" />
           </PointFrame>
-          <PointFrame FrameIndex="113" X="768.0000" Y="1024.0000">
-            <EasingData Type="1" />
+          <PointFrame FrameIndex="83" X="768.0000" Y="1024.0000">
+            <EasingData Type="2" />
           </PointFrame>
-          <PointFrame FrameIndex="121" X="768.0000" Y="1024.0000">
+          <PointFrame FrameIndex="91" X="768.0000" Y="1024.0000">
             <EasingData Type="1" />
           </PointFrame>
         </Timeline>
@@ -132,10 +132,10 @@
           <ScaleFrame FrameIndex="8" X="1.0000" Y="1.0000">
             <EasingData Type="2" />
           </ScaleFrame>
-          <ScaleFrame FrameIndex="113" X="1.0000" Y="1.0000">
-            <EasingData Type="1" />
+          <ScaleFrame FrameIndex="83" X="1.0000" Y="1.0000">
+            <EasingData Type="2" />
           </ScaleFrame>
-          <ScaleFrame FrameIndex="121" X="0.9000" Y="0.9000">
+          <ScaleFrame FrameIndex="91" X="0.9000" Y="0.9000">
             <EasingData Type="1" />
           </ScaleFrame>
         </Timeline>
@@ -146,20 +146,20 @@
           <ScaleFrame FrameIndex="8" X="0.0000" Y="0.0000">
             <EasingData Type="2" />
           </ScaleFrame>
-          <ScaleFrame FrameIndex="113" X="0.0000" Y="0.0000">
-            <EasingData Type="1" />
+          <ScaleFrame FrameIndex="83" X="0.0000" Y="0.0000">
+            <EasingData Type="2" />
           </ScaleFrame>
-          <ScaleFrame FrameIndex="121" X="0.0000" Y="0.0000">
+          <ScaleFrame FrameIndex="91" X="0.0000" Y="0.0000">
             <EasingData Type="1" />
           </ScaleFrame>
         </Timeline>
       </Animation>
       <AnimationList>
         <AnimationInfo Name="gameOverFadeIn" StartIndex="0" EndIndex="60">
-          <RenderColor A="150" R="255" G="222" B="173" />
+          <RenderColor A="255" R="255" G="222" B="173" />
         </AnimationInfo>
-        <AnimationInfo Name="gameOverFadeOut" StartIndex="61" EndIndex="121">
-          <RenderColor A="150" R="245" G="255" B="250" />
+        <AnimationInfo Name="gameOverFadeOut" StartIndex="61" EndIndex="91">
+          <RenderColor A="255" R="245" G="255" B="250" />
         </AnimationInfo>
       </AnimationList>
       <ObjectData Name="Layer" ctype="GameLayerObjectData">
@@ -242,7 +242,7 @@
                 <PreSize X="2.0000" Y="2.0000" />
                 <FileData Type="Normal" Path="img/buttonBorder.png" Plist="" />
               </AbstractNodeData>
-              <AbstractNodeData Name="label" ActionTag="245059912" Tag="22" IconVisible="False" PositionPercentXEnabled="True" PositionPercentYEnabled="True" LeftMargin="-30.0000" RightMargin="-30.0000" TopMargin="-16.0000" BottomMargin="-16.0000" IsCustomSize="True" FontSize="64" LabelText="Menu" HorizontalAlignmentType="HT_Center" VerticalAlignmentType="VT_Center" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="TextObjectData">
+              <AbstractNodeData Name="label" ActionTag="245059912" Tag="22" IconVisible="False" PositionPercentXEnabled="True" PositionPercentYEnabled="True" LeftMargin="-30.0000" RightMargin="-30.0000" TopMargin="-16.0000" BottomMargin="-16.0000" IsCustomSize="True" FontSize="48" LabelText="Menu" HorizontalAlignmentType="HT_Center" VerticalAlignmentType="VT_Center" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="TextObjectData">
                 <Size X="220.0000" Y="96.0000" />
                 <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
                 <Position X="80.0000" Y="32.0000" />
@@ -298,17 +298,17 @@
                 <Size X="1800.0000" Y="1800.0000" />
                 <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
                 <Position X="768.0000" Y="1024.0000" />
-                <Scale ScaleX="0.4000" ScaleY="0.4000" />
+                <Scale ScaleX="0.9735" ScaleY="0.9735" />
                 <CColor A="255" R="255" G="255" B="255" />
                 <PrePosition X="0.5000" Y="0.5000" />
                 <PreSize X="1.1719" Y="0.8789" />
                 <FileData Type="Normal" Path="img/glow.png" Plist="" />
               </AbstractNodeData>
-              <AbstractNodeData Name="image" ActionTag="833397558" Tag="93" RotationSkewX="-15.0000" RotationSkewY="-15.0000" IconVisible="False" PositionPercentXEnabled="True" PositionPercentYEnabled="True" LeftMargin="268.0000" RightMargin="268.0000" TopMargin="524.0000" BottomMargin="524.0000" ctype="SpriteObjectData">
+              <AbstractNodeData Name="image" ActionTag="833397558" Tag="93" RotationSkewX="-0.6629" RotationSkewY="-0.6629" IconVisible="False" PositionPercentXEnabled="True" PositionPercentYEnabled="True" LeftMargin="268.0000" RightMargin="268.0000" TopMargin="524.0000" BottomMargin="524.0000" ctype="SpriteObjectData">
                 <Size X="1000.0000" Y="1000.0000" />
                 <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
                 <Position X="768.0000" Y="1024.0000" />
-                <Scale ScaleX="0.9000" ScaleY="0.9000" />
+                <Scale ScaleX="0.9956" ScaleY="0.9956" />
                 <CColor A="255" R="255" G="255" B="255" />
                 <PrePosition X="0.5000" Y="0.5000" />
                 <PreSize X="0.6510" Y="0.4883" />
@@ -407,7 +407,7 @@
                 </Children>
                 <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
                 <Position X="768.0000" Y="1024.0000" />
-                <Scale ScaleX="0.9000" ScaleY="0.9000" />
+                <Scale ScaleX="1.0000" ScaleY="1.0000" />
                 <CColor A="255" R="255" G="255" B="255" />
                 <PrePosition X="0.5000" Y="0.5000" />
                 <PreSize X="0.2786" Y="0.2256" />

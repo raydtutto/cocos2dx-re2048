@@ -145,8 +145,7 @@ void MenuScene::initListeners() {
         mKeyboardListener->onKeyReleased = [](const EventKeyboard::KeyCode keyCode, Event*) {
             if (keyCode == EventKeyboard::KeyCode::KEY_ENTER || keyCode == EventKeyboard::KeyCode::KEY_KP_ENTER) {
                 CCLOG("Button clicked.");
-                auto audio = cocos2d::UserDefault::getInstance()->getBoolForKey("audioEnabled", true);
-                if (audio) {
+                if (cocos2d::UserDefault::getInstance()->getBoolForKey("audioEnabled", true)) {
                     CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/button.ogg", false, 1.0f, 1.0f, 1.0f);
                 }
                 auto gameplayScene = GameplayScene::create();
@@ -171,8 +170,7 @@ void MenuScene::initListeners() {
         // Start game
         mTouchListener->onTouchEnded = [] (Touch *touch, Event *event) {
             CCLOG("Start game");
-            auto audio = cocos2d::UserDefault::getInstance()->getBoolForKey("audioEnabled", true);
-            if (audio) {
+            if (cocos2d::UserDefault::getInstance()->getBoolForKey("audioEnabled", true)) {
                 CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/button.ogg", false, 1.0f, 1.0f, 1.0f);
             }
             Director::getInstance()->replaceScene(GameplayScene::create());
@@ -199,6 +197,6 @@ void scaleAnimation(cocos2d::Node* image) {
     image->setScale(.9f);
     image->setAnchorPoint(Vec2(0.5, 0.5));
     const auto scaleTo = cocos2d::ScaleTo::create(1.2f, 1.f); // Scale
-    const auto scaleEaseOut = EaseElasticOut::create(scaleTo->clone());
+    const auto scaleEaseOut = EaseElasticOut::create(scaleTo);
     image->runAction(scaleEaseOut);
 }
