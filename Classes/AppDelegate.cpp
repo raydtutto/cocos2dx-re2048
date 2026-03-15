@@ -115,6 +115,9 @@ bool AppDelegate::applicationDidFinishLaunching() {
         debugModule::ImGuiDebugLayer::initializeLayer();
     #endif
 
+    // Set the background clear color
+    Director::getInstance()->setClearColor(Color4F(Color4B(40, 40, 45, 255)));
+
     // create a scene. it's an autorelease object
     auto sceneMenu = MenuScene::create();
     // auto sceneMenu = GameplayScene::create();

@@ -5,18 +5,19 @@
 #include "ui/UIButton.h"
 
 class CustomButton : public cocos2d::ui::Button {
-    public:
+public:
     static CustomButton *create() {
-        CustomButton *pRet = new(std::nothrow) CustomButton();
+        auto* pRet = new(std::nothrow) CustomButton();
         if (pRet && pRet->init()) {
             pRet->autorelease();
             return pRet;
         } else {
             delete pRet;
-            pRet = nullptr;
             return nullptr;
         }
     }
+    virtual void onPressStateChangedToNormal() override;
+    virtual void onPressStateChangedToPressed() override;
 };
 
 

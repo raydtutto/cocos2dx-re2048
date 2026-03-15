@@ -10,6 +10,7 @@ public:
     static MenuScene* create();
     ~MenuScene() override;
     bool init() override;
+    void onEnterTransitionDidFinish() override;
 private:
     void initListeners();
     static bool toggleAudio();

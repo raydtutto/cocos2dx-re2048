@@ -2,6 +2,7 @@
 
 #include "GameplayScene.h"
 #include "CustomButton.h"
+#include "utils/CustomTransitionSlideInR.h"
 #include "cocostudio/ActionTimeline/CCActionTimeline.h"
 #include "cocostudio/ActionTimeline/CSLoader.h"
 #include "utils/NodeUtils.h"
@@ -12,7 +13,6 @@
 using namespace cocos2d;
 
 void scaleAnimation(cocos2d::Node* image);
-// bla bla
 
 MenuScene* MenuScene::create() {
     auto pRet = new(std::nothrow) MenuScene();
@@ -47,7 +47,7 @@ bool MenuScene::init() {
     const auto layerColor = LayerColor::create(colorBg);
     addChild(layerColor);
 
-    mRoot = CSLoader::createNodeWithVisibleSize("widgets/menuScene.csb");
+    mRoot = CSLoader::createNode("widgets/menuScene.csb");
     if (mRoot) {
         addChild(mRoot);
     } else {
@@ -62,6 +62,7 @@ bool MenuScene::init() {
     // Title animation
     if (const auto titleImg = dynamic_cast<cocos2d::ui::ListView*>(NodeUtils::getNodeByName(mRoot, "titleHolder"))) {
         titleImg->setScrollBarEnabled(false);
+
         const std::vector<std::string> nodeNames = { "num2Holder", "num0Holder", "num4Holder", "num8Holder" };
 
         // Apply animation on tiles
@@ -133,6 +134,10 @@ bool MenuScene::init() {
     return true;
 }
 
+void MenuScene::onEnterTransitionDidFinish() {
+    Scene::onEnterTransitionDidFinish();
+}
+
 void MenuScene::initListeners() {
     // Start game on Enter
     if (mKeyboardListener) {
@@ -146,8 +151,7 @@ void MenuScene::initListeners() {
                 if (cocos2d::UserDefault::getInstance()->getBoolForKey("audioEnabled", true)) {
                     CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/button.ogg", false, 1.0f, 1.0f, 1.0f);
                 }
-                auto gameplayScene = GameplayScene::create();
-                Director::getInstance()->replaceScene(gameplayScene);
+                Director::getInstance()->replaceScene(CustomTransitionSlideInR::create(.4f, GameplayScene::create()));
             }
         };
         Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(mKeyboardListener, this);
@@ -171,7 +175,7 @@ void MenuScene::initListeners() {
             if (cocos2d::UserDefault::getInstance()->getBoolForKey("audioEnabled", true)) {
                 CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/button.ogg", false, 1.0f, 1.0f, 1.0f);
             }
-            Director::getInstance()->replaceScene(GameplayScene::create());
+            Director::getInstance()->replaceScene(CustomTransitionSlideInR::create(.4f, GameplayScene::create()));
         };
 
         Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(mTouchListener, this);
@@ -192,9 +196,17 @@ bool MenuScene::toggleAudio() {
 }
 
 void scaleAnimation(cocos2d::Node* image) {
-    image->setScale(.9f);
-    image->setAnchorPoint(Vec2(0.5, 0.5));
-    const auto scaleTo = cocos2d::ScaleTo::create(1.2f, 1.f); // Scale
-    const auto scaleEaseOut = EaseElasticOut::create(scaleTo);
-    image->runAction(scaleEaseOut);
+    const auto bg = NodeUtils::getNodeByName(image, "bg");
+    const auto num = NodeUtils::getNodeByName(image, "num");
+
+    if (bg && num) {
+        bg->setScale(.9f);
+        num->setScale(.9f);
+
+        const auto scaleTo = cocos2d::ScaleTo::create(1.2f, 1.f);
+        const auto scaleEaseOut = EaseElasticOut::create(scaleTo);
+
+        bg->runAction(scaleEaseOut);
+        num->runAction(scaleEaseOut->clone());
+    }
 }

@@ -36,10 +36,17 @@ private:
     static void playSound(int num);
     void gameOver();
 
+    // Save loading state
+    void saveBoard();
+    void tryLoadBoard();
+    void resetBoard();
+
     void debugGenerateUnsolvableBoard();
 
 public:
     void update(float delta) override;
+
+    void onEnterTransitionDidFinish() override;
 
 private:
     cocos2d::Node* mRoot{nullptr};

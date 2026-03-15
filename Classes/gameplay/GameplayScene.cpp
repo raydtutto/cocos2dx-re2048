@@ -1,6 +1,7 @@
 #include "GameplayScene.h"
 
 #include "CustomButton.h"
+#include "utils/CustomTransitionSlideInL.h"
 #include "MenuScene.h"
 #include "TileWidget.h"
 
@@ -95,7 +96,7 @@ bool GameplayScene::init() {
             if (cocos2d::UserDefault::getInstance()->getBoolForKey("audioEnabled", true)) {
                 CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/button.ogg", false, 1.0f, 1.0f, 1.0f);
             }
-            Director::getInstance()->replaceScene(MenuScene::create());
+            Director::getInstance()->replaceScene(CustomTransitionSlideInL::create(.6f, MenuScene::create()));
         });
     } else {
         return false;
@@ -112,7 +113,9 @@ bool GameplayScene::init() {
         });
     }
 
-    reinitBoard();
+    if (const auto gameOverHolder = NodeUtils::getNodeByName(mRoot, "gameOverHolder"))
+        gameOverHolder->setVisible(false);
+
     initListeners();
     scheduleUpdate();
 
@@ -123,8 +126,8 @@ void GameplayScene::reinitBoard() {
     mGameOver = false;
     mIsRestarting = false;
 
-    const auto gameOverHolder = NodeUtils::getNodeByName(mRoot, "gameOverHolder");
-    gameOverHolder->setVisible(false);
+    if (const auto gameOverHolder = NodeUtils::getNodeByName(mRoot, "gameOverHolder"))
+        gameOverHolder->setVisible(false);
 
     for (int x = 0; x < _gridSizeX; ++x) {
         for (int y = 0; y < _gridSizeY; ++y) {
@@ -220,7 +223,7 @@ void GameplayScene::initListeners() {
                     if (cocos2d::UserDefault::getInstance()->getBoolForKey("audioEnabled", true))
                         CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/button.ogg", false, 1.0f, 1.0f, 1.0f);
 
-                    Director::getInstance()->replaceScene(MenuScene::create());
+                    Director::getInstance()->replaceScene(CustomTransitionSlideInL::create(.4f, MenuScene::create()));
                     break;
                 }
                 default:
@@ -468,7 +471,8 @@ void GameplayScene::gameOver() {
             if (audioEnabled)
                 CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/button.ogg", false, 1.0f, 1.0f, 1.0f);
 
-            Director::getInstance()->replaceScene(MenuScene::create());
+            // Scene transition
+            Director::getInstance()->replaceScene(CustomTransitionSlideInL::create(.4f, MenuScene::create()));
         });
     }
 }
@@ -525,7 +529,7 @@ std::pair<int, int> GameplayScene::matchTileRow(std::vector<TileGrid::iterator>&
 
 void GameplayScene::updateScore(const int num) {
     // Score reset
-    cocos2d::UserDefault::getInstance()->setIntegerForKey("best_score", 0);
+    // cocos2d::UserDefault::getInstance()->setIntegerForKey("best_score", 0);
 
     // Score update
     mGameScore += num;
@@ -560,28 +564,56 @@ void GameplayScene::updateScore(const int num) {
 }
 
 void GameplayScene::debugGenerateUnsolvableBoard() {
-    std::vector<std::tuple<int, int, int>> list = { // x y num
-        {0, 0, 2},
-        {0, 1, 4},
-        {0, 2, 8},
-        {0, 3, 16},
+    if (!FileUtils::getInstance()->isFileExist("devBoard.json")) {
+        CCLOGERROR("File doesn't exist.");
+        return;
+    }
 
-        {1, 0, 32},
-        {1, 1, 64},
-        {1, 2, 128},
-        {1, 3, 256},
+    const auto jsonData = FileUtils::getInstance()->getStringFromFile("devBoard.json");
+    CCLOG("%s", jsonData.c_str());
 
-        {2, 0, 512},
-        {2, 1, 1024},
-        {2, 2, 2048},
-        {2, 3, 4096},
+    rapidjson::Document document;
+    if (document.Parse(jsonData.c_str()).HasParseError() || !document.IsArray()) {
+        CCLOGERROR("Failed to parse json %d", document.GetParseError());
+    }
 
-        {3, 0, 2},
-        {3, 1, 4},
-        {3, 2, 8},
-        {3, 3, 16}
-    };
+    std::vector<std::tuple<int, int, int>> list; // x y num
+    auto array = document.GetArray();
+    for (auto it = array.Begin(); it != array.End(); ++it) {
+        if (it->IsObject() && it->HasMember("x") && it->HasMember("y") && it->HasMember("val")) {
+            auto obj = it->GetObject();
+            int x = obj["x"].GetInt();
+            int y = obj["y"].GetInt();
+            int val = obj["val"].GetInt();
+            list.emplace_back(x, y, val);
+        } else {
+            CCLOGERROR("No value for x,y in array.");
+            return;
+        }
+    }
 
+    // std::vector<std::tuple<int, int, int>> list = { // x y num
+    //     {0, 0, 2},
+    //     {0, 1, 4},
+    //     {0, 2, 8},
+    //     {0, 3, 16},
+    //
+    //     {1, 0, 32},
+    //     {1, 1, 64},
+    //     {1, 2, 128},
+    //     {1, 3, 256},
+    //
+    //     {2, 0, 512},
+    //     {2, 1, 1024},
+    //     {2, 2, 2048},
+    //     {2, 3, 4096},
+    //
+    //     {3, 0, 2},
+    //     {3, 1, 4},
+    //     {3, 2, 8},
+    //     {3, 3, 16}
+    // };
+    //
     for (const auto& [x, y, num] : list) {
         auto tile = TileWidget::create(num);
         mBoard->addChild(tile);
@@ -616,4 +648,9 @@ bool GameplayScene::checkUnsolvableBoard() {
 void GameplayScene::update(float delta) {
     Scene::update(delta);
     mMoveTimer += delta;
+}
+
+void GameplayScene::onEnterTransitionDidFinish() {
+    Scene::onEnterTransitionDidFinish();
+    reinitBoard();
 }

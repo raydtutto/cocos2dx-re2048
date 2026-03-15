@@ -25,8 +25,9 @@ void TileWidget::setBoardPos(const std::pair<int, int>& pos, bool animate) {
         static_cast<float>(pos.second) * tileSize.height + tileSize.height / 2
     );
     if (animate) {
-        auto action = cocos2d::MoveTo::create(getTimeDelay() / 2, nextPos);
-        runAction(action);
+        const auto action = cocos2d::MoveTo::create(getTimeDelay() / 2, nextPos);
+        const auto ease = EaseQuadraticActionInOut::create(action);
+        runAction(ease);
     } else {
         setPosition(nextPos);
     }
