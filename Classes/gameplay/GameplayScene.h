@@ -23,6 +23,7 @@ public:
     static GameplayScene *create();
     ~GameplayScene() override;
     bool init() override;
+    void onExit() override;
 
 private:
     void initListeners();
@@ -40,8 +41,6 @@ private:
     void saveBoard();
     void tryLoadBoard();
     void resetBoard();
-
-    void debugGenerateUnsolvableBoard();
 
 public:
     void update(float delta) override;

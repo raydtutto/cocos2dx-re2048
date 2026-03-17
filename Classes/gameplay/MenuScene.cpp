@@ -47,7 +47,7 @@ bool MenuScene::init() {
     const auto layerColor = LayerColor::create(colorBg);
     addChild(layerColor);
 
-    mRoot = CSLoader::createNode("widgets/menuScene.csb");
+    mRoot = CSLoader::createNodeWithVisibleSize("widgets/menuScene.csb");
     if (mRoot) {
         addChild(mRoot);
     } else {

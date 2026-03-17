@@ -158,6 +158,9 @@ target_include_directories(${APP_NAME}
         PRIVATE Classes
         PRIVATE ${COCOS2DX_ROOT_PATH}/cocos/audio/include/
 )
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    target_compile_definitions(${APP_NAME} PRIVATE DEBUG)
+endif ()
 target_compile_features(${APP_NAME} PRIVATE cxx_std_17)
 
 # mark app resources

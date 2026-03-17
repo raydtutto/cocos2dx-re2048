@@ -65,8 +65,8 @@ bool AppDelegate::applicationDidFinishLaunching() {
     auto glview = director->getOpenGLView();
 
     // cocos2d::Size designResolutionSize = cocos2d::Size(640, 960); // S
-    cocos2d::Size designResolutionSize = cocos2d::Size(768, 1024); // M
-    // cocos2d::Size designResolutionSize = cocos2d::Size(1024, 1024); // L
+    // cocos2d::Size designResolutionSize = cocos2d::Size(768, 1024); // M
+    cocos2d::Size designResolutionSize = cocos2d::Size(1024, 1024); // L
 
     if(!glview) {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) || (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)

@@ -102,7 +102,7 @@
       </Animation>
       <AnimationList>
         <AnimationInfo Name="titleRotation" StartIndex="0" EndIndex="360">
-          <RenderColor A="150" R="211" G="211" B="211" />
+          <RenderColor A="255" R="211" G="211" B="211" />
         </AnimationInfo>
       </AnimationList>
       <ObjectData Name="Layer" Tag="13" ctype="GameLayerObjectData">
@@ -346,7 +346,7 @@
             <OutlineColor A="255" R="255" G="0" B="0" />
             <ShadowColor A="255" R="110" G="110" B="110" />
           </AbstractNodeData>
-          <AbstractNodeData Name="textHolder" ActionTag="1262484914" Tag="45" IconVisible="False" LeftMargin="68.0000" RightMargin="68.0000" TopMargin="576.6400" BottomMargin="351.3600" ClipAble="False" BackColorAlpha="102" ColorAngle="90.0000" Scale9Width="1" Scale9Height="1" ScrollDirectionType="0" ItemMargin="20" VerticalType="Align_VerticalCenter" ctype="ListViewObjectData">
+          <AbstractNodeData Name="textHolder" ActionTag="1262484914" Tag="45" IconVisible="False" PositionPercentXEnabled="True" PositionPercentYEnabled="True" LeftMargin="68.0000" RightMargin="68.0000" TopMargin="576.6400" BottomMargin="351.3600" ClipAble="False" BackColorAlpha="102" ColorAngle="90.0000" Scale9Width="1" Scale9Height="1" ScrollDirectionType="0" ItemMargin="20" VerticalType="Align_VerticalCenter" ctype="ListViewObjectData">
             <Size X="632.0000" Y="96.0000" />
             <Children>
               <AbstractNodeData Name="press" ActionTag="261303677" Tag="27" IconVisible="False" RightMargin="467.0000" FontSize="64" LabelText="Press" HorizontalAlignmentType="HT_Center" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="TextObjectData">

@@ -12,6 +12,11 @@
 #include "ui/UIText.h"
 #include "editor-support/cocostudio/SimpleAudioEngine.h"
 
+#include <json/document.h>
+#include <json/writer.h>
+
+#include "json/prettywriter.h"
+
 USING_NS_CC;
 
 using namespace cocos2d;
@@ -109,6 +114,7 @@ bool GameplayScene::init() {
             if (cocos2d::UserDefault::getInstance()->getBoolForKey("audioEnabled", true)) {
                 CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/button.ogg", false, 1.0f, 1.0f, 1.0f);
             }
+            resetBoard();
             reinitBoard();
         });
     }
@@ -116,10 +122,35 @@ bool GameplayScene::init() {
     if (const auto gameOverHolder = NodeUtils::getNodeByName(mRoot, "gameOverHolder"))
         gameOverHolder->setVisible(false);
 
+
     initListeners();
     scheduleUpdate();
 
+    // Debug unsolvable board
+#if defined(DEBUG)
+    const auto debugBtn = CustomButton::create();
+    debugBtn->setTitleText("Debug unsolvable");
+    debugBtn->setTitleFontSize(32);
+    debugBtn->setTitleColor(cocos2d::Color3B::RED);
+    addChild(debugBtn);
+
+    const auto size = Director::getInstance()->getWinSize();
+    debugBtn->setPosition({size.width / 2, 100});
+
+    debugBtn->addClickEventListener([&](Ref*) {
+        resetBoard();
+        const auto jsonData = FileUtils::getInstance()->getStringFromFile("devBoard.json");
+        UserDefault::getInstance()->setStringForKey("saved_board", jsonData);
+        reinitBoard();
+    });
+#endif
+
     return true;
+}
+
+void GameplayScene::onExit() {
+    Scene::onExit();
+    saveBoard();
 }
 
 void GameplayScene::reinitBoard() {
@@ -147,9 +178,7 @@ void GameplayScene::reinitBoard() {
 
     mMoveTimer = TileWidget::getTimeDelay();
 
-    debugGenerateUnsolvableBoard();
-    // generateTile();
-    // generateTile();
+    tryLoadBoard();
 }
 
 void GameplayScene::initListeners() {
@@ -215,9 +244,11 @@ void GameplayScene::initListeners() {
                 case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
                     onMove(eDirection::RIGHT);
                     break;
-                case EventKeyboard::KeyCode::KEY_R:
+                case EventKeyboard::KeyCode::KEY_R: {
+                    resetBoard();
                     reinitBoard();
                     break;
+                }
                 case EventKeyboard::KeyCode::KEY_ESCAPE: {
                     CCLOG("Back to menu.");
                     if (cocos2d::UserDefault::getInstance()->getBoolForKey("audioEnabled", true))
@@ -404,8 +435,13 @@ void GameplayScene::gameOver() {
         return;
     mGameOver = true;
 
+    const auto winSize = Director::getInstance()->getWinSize();
+
     const auto gameOverHolder = NodeUtils::getNodeByName(mRoot, "gameOverHolder");
-    if (!gameOverHolder) {
+    const auto glow = NodeUtils::getNodeByName(gameOverHolder, "glow");
+    const auto img = NodeUtils::getNodeByName(gameOverHolder, "image");
+    const auto buttonHolder = NodeUtils::getNodeByName(gameOverHolder, "buttonHolder");
+    if (!gameOverHolder || !glow || !img || !buttonHolder) {
         CCLOGERROR("GameOverHolder node lost.");
         return;
     }
@@ -445,6 +481,7 @@ void GameplayScene::gameOver() {
                 Vector<FiniteTimeAction *> list;
                 list.pushBack(cocos2d::DelayTime::create(.5f));
                 list.pushBack(cocos2d::CallFunc::create([this]() {
+                    this->resetBoard();
                     this->reinitBoard();
                     this->mGameOver = false;
                 }));
@@ -454,6 +491,7 @@ void GameplayScene::gameOver() {
                 }));
                 gameOverHolder->runAction(Sequence::create(list));
             } else {
+                this->resetBoard();
                 this->reinitBoard();
                 this->mGameOver = false;
                 gameOverHolder->setVisible(false);
@@ -475,6 +513,92 @@ void GameplayScene::gameOver() {
             Director::getInstance()->replaceScene(CustomTransitionSlideInL::create(.4f, MenuScene::create()));
         });
     }
+}
+
+void GameplayScene::saveBoard() {
+    // Create document
+    rapidjson::Document doc;
+    doc.SetArray();
+    auto& allocator = doc.GetAllocator();
+
+    // Write to doc
+    for (int x = 0; x < _gridSizeX; ++x) {
+        for (int y = 0; y < _gridSizeY; ++y) {
+            rapidjson::Value row(rapidjson::kObjectType);
+            row.AddMember("x", x, allocator);
+            row.AddMember("y", y, allocator);
+            row.AddMember("val", !mTileGrid[{x, y}] ? 0 : mTileGrid[{x, y}]->getNumber(), allocator);
+            doc.PushBack(row, allocator);
+        }
+    }
+
+    // Convert to .json
+    rapidjson::StringBuffer buffer;
+    rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(buffer);
+    doc.Accept(writer);
+
+    const char* output = buffer.GetString();
+
+    // Save string into UserDefault
+    cocos2d::UserDefault::getInstance()->setStringForKey("saved_board", output);
+    CCLOG("%s", output);
+}
+
+void GameplayScene::tryLoadBoard() {
+    // Extract data from a file
+    const auto jsonData = UserDefault::getInstance()->getStringForKey("saved_board", "");
+    CCLOG("%s", jsonData.c_str());
+    if (jsonData.empty()) {
+        resetBoard();
+        generateTile();
+        generateTile();
+        return;
+    }
+
+    // Parse data
+    rapidjson::Document document;
+    if (document.Parse(jsonData.c_str()).HasParseError() || !document.IsArray()) {
+        CCLOGERROR("Failed to parse json %d", document.GetParseError());
+        resetBoard();
+        generateTile();
+        generateTile();
+        return;
+    }
+
+    int count = 0;
+    const auto array = document.GetArray();
+    for (auto it = array.Begin(); it != array.End(); ++it) {
+        if (it->IsObject() && it->HasMember("x") && it->HasMember("y") && it->HasMember("val")) {
+            auto obj = it->GetObject();
+            int x = obj["x"].GetInt();
+            int y = obj["y"].GetInt();
+            int val = obj["val"].GetInt();
+
+            // Add tile to board
+            if (val == 0) {
+                mTileGrid[std::pair<int, int>(x, y)] = nullptr;
+            } else {
+                const auto tile = TileWidget::create(val);
+                mBoard->addChild(tile);
+                mTileGrid[std::pair<int, int>(x, y)] = tile;
+                tile->setBoardPos(std::pair<int, int>(x, y), false);
+                count++;
+            }
+        } else {
+            CCLOGERROR("No value for x,y in array.");
+            return;
+        }
+    }
+
+    if (count == 0) {
+        resetBoard();
+        generateTile();
+        generateTile();
+    }
+}
+
+void GameplayScene::resetBoard() {
+    UserDefault::getInstance()->setStringForKey("saved_board", "");
 }
 
 std::pair<int, int> GameplayScene::matchTileRow(std::vector<TileGrid::iterator>& buffer) {
@@ -560,65 +684,6 @@ void GameplayScene::updateScore(const int num) {
         }
     } else {
         CCLOGERROR("No game score.");
-    }
-}
-
-void GameplayScene::debugGenerateUnsolvableBoard() {
-    if (!FileUtils::getInstance()->isFileExist("devBoard.json")) {
-        CCLOGERROR("File doesn't exist.");
-        return;
-    }
-
-    const auto jsonData = FileUtils::getInstance()->getStringFromFile("devBoard.json");
-    CCLOG("%s", jsonData.c_str());
-
-    rapidjson::Document document;
-    if (document.Parse(jsonData.c_str()).HasParseError() || !document.IsArray()) {
-        CCLOGERROR("Failed to parse json %d", document.GetParseError());
-    }
-
-    std::vector<std::tuple<int, int, int>> list; // x y num
-    auto array = document.GetArray();
-    for (auto it = array.Begin(); it != array.End(); ++it) {
-        if (it->IsObject() && it->HasMember("x") && it->HasMember("y") && it->HasMember("val")) {
-            auto obj = it->GetObject();
-            int x = obj["x"].GetInt();
-            int y = obj["y"].GetInt();
-            int val = obj["val"].GetInt();
-            list.emplace_back(x, y, val);
-        } else {
-            CCLOGERROR("No value for x,y in array.");
-            return;
-        }
-    }
-
-    // std::vector<std::tuple<int, int, int>> list = { // x y num
-    //     {0, 0, 2},
-    //     {0, 1, 4},
-    //     {0, 2, 8},
-    //     {0, 3, 16},
-    //
-    //     {1, 0, 32},
-    //     {1, 1, 64},
-    //     {1, 2, 128},
-    //     {1, 3, 256},
-    //
-    //     {2, 0, 512},
-    //     {2, 1, 1024},
-    //     {2, 2, 2048},
-    //     {2, 3, 4096},
-    //
-    //     {3, 0, 2},
-    //     {3, 1, 4},
-    //     {3, 2, 8},
-    //     {3, 3, 16}
-    // };
-    //
-    for (const auto& [x, y, num] : list) {
-        auto tile = TileWidget::create(num);
-        mBoard->addChild(tile);
-        mTileGrid[std::pair<int, int>(x, y)] = tile;
-        tile->setBoardPos(std::pair<int, int>(x, y), false);
     }
 }
 

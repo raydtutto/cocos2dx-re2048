@@ -315,7 +315,7 @@
                 <FileData Type="Normal" Path="img/tileBG.png" Plist="" />
                 <BlendFunc Src="1" Dst="771" />
               </AbstractNodeData>
-              <AbstractNodeData Name="buttonHolder" ActionTag="-1701114107" Tag="84" IconVisible="False" LeftMargin="554.0000" RightMargin="554.0000" TopMargin="793.0000" BottomMargin="793.0000" TouchEnable="True" ClipAble="False" BackColorAlpha="102" ColorAngle="90.0000" Scale9Width="1" Scale9Height="1" ScrollDirectionType="0" ItemMargin="48" DirectionType="Vertical" HorizontalType="Align_HorizontalCenter" ctype="ListViewObjectData">
+              <AbstractNodeData Name="buttonHolder" ActionTag="-1701114107" Tag="84" IconVisible="False" PositionPercentXEnabled="True" PositionPercentYEnabled="True" LeftMargin="554.0000" RightMargin="554.0000" TopMargin="793.0000" BottomMargin="793.0000" TouchEnable="True" ClipAble="False" BackColorAlpha="102" ColorAngle="90.0000" Scale9Width="1" Scale9Height="1" ScrollDirectionType="0" ItemMargin="48" DirectionType="Vertical" HorizontalType="Align_HorizontalCenter" ctype="ListViewObjectData">
                 <Size X="428.0000" Y="462.0000" />
                 <Children>
                   <AbstractNodeData Name="label" ActionTag="-444239083" Tag="91" IconVisible="False" BottomMargin="354.0000" FontSize="72" LabelText="GAME OVER" ShadowOffsetX="2.0000" ShadowOffsetY="-2.0000" ctype="TextObjectData">
