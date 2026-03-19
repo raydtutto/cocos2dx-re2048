@@ -36,11 +36,30 @@ void TileWidget::setBoardPos(const std::pair<int, int>& pos, bool animate) {
 }
 
 void TileWidget::setNumber(int num) {
+    bool isChanged = _num != num;
     _num = num;
+
+    // Update image path
     std::string path = "GUI/cocosstudio/img/tile" + std::to_string(num) + ".png";
     if (cocos2d::FileUtils::getInstance()->isFileExist(path)) {
         loadTexture(path);
     } else {
         CCLOGERROR("Image path %s is invalid", path.c_str());
     }
+    if (isChanged) {
+        // Scale animation
+        setScale(.9f);
+        const auto scaleTo = cocos2d::ScaleTo::create(.8f, 1.f);
+        const auto scaleEaseOut = EaseElasticOut::create(scaleTo->clone());
+        runAction(scaleEaseOut);
+    }
+}
+
+void TileWidget::removeWidget() {
+    // removeFromParentAndCleanup(true);
+    auto scale = cocos2d::ScaleBy::create(getTimeDelay()/4, 0.8f);
+    auto fade = cocos2d::FadeOut::create(getTimeDelay()/4);
+    auto removeSelf = RemoveSelf::create(true);
+    auto seq = Sequence::create(Spawn::create(scale, fade, nullptr), removeSelf, nullptr);
+    runAction(seq);
 }

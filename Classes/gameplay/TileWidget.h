@@ -24,9 +24,11 @@ public:
         return _num;
     }
 
+    void removeWidget();
+
 private:
     std::pair<int, int> _pos;
-    int _num;
+    int _num{0};
 };
 
 
