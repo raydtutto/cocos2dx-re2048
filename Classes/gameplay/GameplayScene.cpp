@@ -4,6 +4,7 @@
 #include "utils/CustomTransitionSlideInL.h"
 #include "MenuScene.h"
 #include "TileWidget.h"
+#include "GameOverOverlay.h"
 
 #include "cocostudio/ActionTimeline/CSLoader.h"
 #include "cocostudio/ActionTimeline/CCActionTimeline.h"
@@ -119,9 +120,16 @@ bool GameplayScene::init() {
         });
     }
 
-    if (const auto gameOverHolder = NodeUtils::getNodeByName(mRoot, "gameOverHolder"))
-        gameOverHolder->setVisible(false);
-
+    // Game over overlay
+    if (const auto gameOverNode = NodeUtils::getNodeByName(mRoot, "gameOverNode")) {
+        mGameOverOverlay = GameOverOverlay::create([this]() {
+            resetBoard();
+            reinitBoard();
+            mGameOver = false;
+        });
+        gameOverNode->addChild(mGameOverOverlay);
+        mGameOverOverlay->hideGameOver();
+    }
 
     initListeners();
     scheduleUpdate();
@@ -153,12 +161,17 @@ void GameplayScene::onExit() {
     saveBoard();
 }
 
+void GameplayScene::update(float dt) {
+    Scene::update(dt);
+    mMoveTimer += dt;
+}
+
 void GameplayScene::reinitBoard() {
     mGameOver = false;
-    mIsRestarting = false;
 
-    if (const auto gameOverHolder = NodeUtils::getNodeByName(mRoot, "gameOverHolder"))
-        gameOverHolder->setVisible(false);
+    if (mGameOverOverlay) {
+        mGameOverOverlay->hideGameOver();
+    }
 
     for (int x = 0; x < _gridSizeX; ++x) {
         for (int y = 0; y < _gridSizeY; ++y) {
@@ -303,7 +316,7 @@ void GameplayScene::generateTile() {
 }
 
 void GameplayScene::onMove(const eDirection dir) {
-    if (dir == eDirection::UNDEFINED || mGameOver || mIsRestarting) {
+    if (dir == eDirection::UNDEFINED || mGameOver) {
         CCLOGERROR("Cannot move tiles.");
         return;
     }
@@ -431,88 +444,10 @@ void GameplayScene::playSound(const int num) {
 }
 
 void GameplayScene::gameOver() {
-    if (mGameOver)
+    if (mGameOver || !mGameOverOverlay)
         return;
     mGameOver = true;
-
-    const auto winSize = Director::getInstance()->getWinSize();
-
-    const auto gameOverHolder = NodeUtils::getNodeByName(mRoot, "gameOverHolder");
-    const auto glow = NodeUtils::getNodeByName(gameOverHolder, "glow");
-    const auto img = NodeUtils::getNodeByName(gameOverHolder, "image");
-    const auto buttonHolder = NodeUtils::getNodeByName(gameOverHolder, "buttonHolder");
-    if (!gameOverHolder || !glow || !img || !buttonHolder) {
-        CCLOGERROR("GameOverHolder node lost.");
-        return;
-    }
-
-    if (const auto buttonHolder = dynamic_cast<cocos2d::ui::ListView*>(NodeUtils::getNodeByName(mRoot, "buttonHolder")))
-        buttonHolder->setScrollBarEnabled(false);
-
-    gameOverHolder->setVisible(true);
-    gameOverHolder->setOpacity(0);
-    gameOverHolder->stopAllActions();
-    gameOverHolder->runAction(cocos2d::FadeIn::create(.2f));
-
-    // Load timeline animation
-    if (const auto timeline = CSLoader::createTimeline("widgets/gameplayScene.csb")) {
-        mRoot->runAction(timeline);
-        timeline->play("gameOverFadeIn", false);
-    }
-
-    const auto audioEnabled = cocos2d::UserDefault::getInstance()->getBoolForKey("audioEnabled", true);
-
-    // Restart button
-    if (const auto restartButton = dynamic_cast<CustomButton*>(NodeUtils::getNodeByName(mRoot, "restartBtnGameOver"))) {
-        restartButton->addClickEventListener([this, audioEnabled, gameOverHolder](cocos2d::Ref*) {
-            if (mIsRestarting)
-                return;
-
-            mIsRestarting = true;
-
-            if (audioEnabled)
-                CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/button.ogg", false, 1.0f, 1.0f, 1.0f);
-
-            // Sequence animation
-            if (const auto timeline = CSLoader::createTimeline("widgets/gameplayScene.csb")) {
-                mRoot->runAction(timeline);
-                timeline->play("gameOverFadeOut", false);
-
-                Vector<FiniteTimeAction *> list;
-                list.pushBack(cocos2d::DelayTime::create(.5f));
-                list.pushBack(cocos2d::CallFunc::create([this]() {
-                    this->resetBoard();
-                    this->reinitBoard();
-                    this->mGameOver = false;
-                }));
-                list.pushBack(cocos2d::EaseOut::create(cocos2d::FadeOut::create(.2f), .2f));
-                list.pushBack(cocos2d::CallFunc::create([gameOverHolder]() {
-                    gameOverHolder->setVisible(false);
-                }));
-                gameOverHolder->runAction(Sequence::create(list));
-            } else {
-                this->resetBoard();
-                this->reinitBoard();
-                this->mGameOver = false;
-                gameOverHolder->setVisible(false);
-            }
-        });
-    }
-
-    // Menu button
-    if (const auto menuButton = dynamic_cast<CustomButton*>(NodeUtils::getNodeByName(mRoot, "menuBtnGameOver"))) {
-        menuButton->addClickEventListener([this, audioEnabled](cocos2d::Ref*) {
-            if (mIsRestarting)
-                return;
-            CCLOG("Back to menu.");
-
-            if (audioEnabled)
-                CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/button.ogg", false, 1.0f, 1.0f, 1.0f);
-
-            // Scene transition
-            Director::getInstance()->replaceScene(CustomTransitionSlideInL::create(.4f, MenuScene::create()));
-        });
-    }
+    mGameOverOverlay->showGameOver();
 }
 
 void GameplayScene::saveBoard() {
@@ -708,11 +643,6 @@ bool GameplayScene::checkUnsolvableBoard() {
     }
 
     return true;
-}
-
-void GameplayScene::update(float delta) {
-    Scene::update(delta);
-    mMoveTimer += delta;
 }
 
 void GameplayScene::onEnterTransitionDidFinish() {

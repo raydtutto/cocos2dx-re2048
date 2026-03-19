@@ -6,6 +6,7 @@
 
 // forward
 class TileWidget;
+class GameOverOverlay;
 
 enum class eDirection {
     UNDEFINED,
@@ -57,7 +58,7 @@ private:
     float mMoveTimer{0.f};
     int mGameScore{0};
     bool mGameOver = false;
-    bool mIsRestarting{false};
+    GameOverOverlay* mGameOverOverlay{nullptr};
 };
 
 

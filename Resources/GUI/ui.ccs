@@ -58,6 +58,7 @@
           <Project Name="gameplayScene.csd" Type="Layer" />
           <Project Name="menuScene.csd" Type="Layer" />
           <Project Name="tile.csd" Type="Layer" />
+          <Project Name="gameOverOverlay.csd" Type="Layer" />
         </Folder>
       </RootFolder>
     </Group>
