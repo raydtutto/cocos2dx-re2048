@@ -56,7 +56,6 @@ void TileWidget::setNumber(int num) {
 }
 
 void TileWidget::removeWidget() {
-    // removeFromParentAndCleanup(true);
     auto scale = cocos2d::ScaleBy::create(getTimeDelay()/4, 0.8f);
     auto fade = cocos2d::FadeOut::create(getTimeDelay()/4);
     auto removeSelf = RemoveSelf::create(true);

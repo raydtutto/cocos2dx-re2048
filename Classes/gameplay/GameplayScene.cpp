@@ -28,13 +28,18 @@ namespace {
     auto touchSwipeThreshold = 70.f;
 }
 
-// Sounds
-#define PLAY_1 CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/click_1.ogg", false, 1.0f, 1.0f, 1.0f)
-#define PLAY_2 CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/click_2.ogg", false, 1.0f, 1.0f, 1.0f)
-#define PLAY_3 CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/click_3.ogg", false, 1.0f, 1.0f, 1.0f)
-#define PLAY_4 CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/click_4.ogg", false, 1.0f, 1.0f, 1.0f)
-#define PLAY_NULL CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/click_0.ogg", false, 1.0f, 1.0f, 1.0f)
-#define PLAY_MAX CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/ding_deep.ogg", false, 1.0f, 1.0f, 1.0f)
+// Sound macros
+#define PLAY(name) if (cocos2d::UserDefault::getInstance()->getBoolForKey("audioEnabled", true)) {  \
+CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(name, false, 1.0f, 1.0f, 1.0f);         \
+}
+
+#define PLAY_1 PLAY("sounds/click_1.ogg")
+#define PLAY_2 PLAY("sounds/click_2.ogg")
+#define PLAY_3 PLAY("sounds/click_3.ogg")
+#define PLAY_4 PLAY("sounds/click_4.ogg")
+#define PLAY_NULL PLAY("sounds/click_0.ogg")
+#define PLAY_FAIL PLAY("sounds/move_fail.ogg")
+#define PLAY_MAX PLAY("sounds/ding_deep.ogg")
 
 GameplayScene* GameplayScene::create() {
     auto pRet = new(std::nothrow) GameplayScene();
@@ -76,11 +81,10 @@ bool GameplayScene::init() {
 
     // Create gameboard
     if (const auto gameboard = NodeUtils::getNodeByName(mRoot, "gameboard")) {
-        const auto visibleSize = gameboard->getContentSize();
+        const auto visibleSize = cocos2d::Size(gameboard->getContentSize().width, gameboard->getContentSize().height);
         const auto boardBg = Sprite::create("img/boardBg.png");
-        const auto boardSize = boardBg->getContentSize();
         boardBg->setPosition(visibleSize.width / 2, visibleSize.height / 2);
-        boardBg->setScale(std::min(visibleSize.width / boardSize.width, visibleSize.height / boardSize.height));
+        boardBg->setAnchorPoint({.5f, .5f});
         gameboard->addChild(boardBg);
         mBoard = boardBg;
     } else {
@@ -396,11 +400,16 @@ void GameplayScene::onMove(const eDirection dir) {
     playSound(numMergedMax);
 
     if (movedCells > 0) {
+        PLAY("sounds/click_0.ogg")
+
         auto seq = Sequence::create(DelayTime::create(TileWidget::getTimeDelay()/2), CallFunc::create([this]() {
             generateTile();
         }), nullptr);
         runAction(seq);
     } else {
+        PLAY("sounds/move_fail.ogg")
+        animateMoveFail(dir);
+
         if (checkUnsolvableBoard()) {
             CCLOG("Game over!");
             gameOver();
@@ -409,10 +418,6 @@ void GameplayScene::onMove(const eDirection dir) {
 }
 
 void GameplayScene::playSound(const int num) {
-    const auto audioEnabled = cocos2d::UserDefault::getInstance()->getBoolForKey("audioEnabled", true);
-    if (!audioEnabled)
-        return;
-
     switch (num) {
         case 4:
         case 8:
@@ -435,9 +440,6 @@ void GameplayScene::playSound(const int num) {
         case 4096:
             PLAY_MAX;
             break;
-        case 0:
-            PLAY_NULL;
-            break;
         default:
             break;
     }
@@ -448,6 +450,29 @@ void GameplayScene::gameOver() {
         return;
     mGameOver = true;
     mGameOverOverlay->showGameOver();
+}
+
+void GameplayScene::animateMoveFail(const eDirection dir) const {
+    const auto bg = NodeUtils::getNodeByName(mRoot,"gameboard");
+
+    const bool isHorizontal = (dir == eDirection::LEFT || dir == eDirection::RIGHT);
+    const cocos2d::Vec2 offset = isHorizontal ? cocos2d::Vec2(8, 0) : cocos2d::Vec2(0, 8);
+    constexpr float duration = 0.05f;
+
+    const auto moveR = cocos2d::MoveBy::create(duration, offset);
+    const auto moveL = moveR->reverse();
+    const auto moveBack = cocos2d::MoveTo::create(duration, bg->getPosition());
+
+    const auto seq = Sequence::create(
+        cocos2d::EaseSineInOut::create(moveR),
+        cocos2d::EaseSineInOut::create(moveL),
+        cocos2d::EaseSineInOut::create(moveR->clone()),
+        cocos2d::EaseSineInOut::create(moveL->clone()),
+        cocos2d::EaseSineInOut::create(moveBack),
+        nullptr
+    );
+
+    bg->runAction(seq);
 }
 
 void GameplayScene::saveBoard() {
@@ -562,6 +587,7 @@ std::pair<int, int> GameplayScene::matchTileRow(std::vector<TileGrid::iterator>&
             list[i + 1]->removeWidget();
             list[i + 1] = nullptr;
             merged.push_back(list[i]);
+
             i++; // Skip removed element
             moved++;
         } else {
@@ -587,9 +613,6 @@ std::pair<int, int> GameplayScene::matchTileRow(std::vector<TileGrid::iterator>&
 }
 
 void GameplayScene::updateScore(const int num) {
-    // Score reset
-    // cocos2d::UserDefault::getInstance()->setIntegerForKey("best_score", 0);
-
     // Score update
     mGameScore += num;
     if (const auto gameScore = dynamic_cast<cocos2d::ui::Text*>(NodeUtils::getNodeByName(mRoot, "score"))) {

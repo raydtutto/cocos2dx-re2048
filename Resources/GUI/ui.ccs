@@ -53,6 +53,7 @@
           <File Name="click_3.ogg" />
           <File Name="click_4.ogg" />
           <File Name="ding_deep.ogg" />
+          <File Name="move_fail.ogg" />
         </Folder>
         <Folder Name="widgets">
           <Project Name="gameplayScene.csd" Type="Layer" />

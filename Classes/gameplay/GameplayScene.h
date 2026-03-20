@@ -37,6 +37,7 @@ private:
     bool checkUnsolvableBoard();
     static void playSound(int num);
     void gameOver();
+    void animateMoveFail(const eDirection dir) const;
 
     // Save loading state
     void saveBoard();
@@ -45,7 +46,6 @@ private:
 
 public:
     void update(float delta) override;
-
     void onEnterTransitionDidFinish() override;
 
 private:
