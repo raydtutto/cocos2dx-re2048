@@ -56,10 +56,10 @@
           <File Name="move_fail.ogg" />
         </Folder>
         <Folder Name="widgets">
+          <Project Name="overlayNode.csd" Type="Layer" />
           <Project Name="gameplayScene.csd" Type="Layer" />
           <Project Name="menuScene.csd" Type="Layer" />
           <Project Name="tile.csd" Type="Layer" />
-          <Project Name="gameOverOverlay.csd" Type="Layer" />
         </Folder>
       </RootFolder>
     </Group>

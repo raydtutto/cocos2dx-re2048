@@ -1,4 +1,4 @@
-#include "GameOverOverlay.h"
+#include "OverlayNode.h"
 
 #include "CustomButton.h"
 #include "MenuScene.h"
@@ -6,13 +6,14 @@
 #include "cocostudio/ActionTimeline/CCActionTimeline.h"
 #include "cocostudio/ActionTimeline/CSLoader.h"
 #include "ui/UIListView.h"
+#include "ui/UIText.h"
 #include "utils/CustomTransitionSlideInL.h"
 #include "utils/NodeUtils.h"
 
 using namespace cocos2d;
 
-GameOverOverlay * GameOverOverlay::create(std::function<void()> onRestart) {
-    auto pRet = new(std::nothrow) GameOverOverlay();
+OverlayNode * OverlayNode::create(const std::function<void()>& onRestart) {
+    auto pRet = new(std::nothrow) OverlayNode();
     if (pRet && pRet->initWithCallback(onRestart)) {
         pRet->autorelease();
         return pRet;
@@ -22,14 +23,14 @@ GameOverOverlay * GameOverOverlay::create(std::function<void()> onRestart) {
     }
 }
 
-bool GameOverOverlay::initWithCallback(std::function<void()> onRestart) {
+bool OverlayNode::initWithCallback(const std::function<void()>& onRestart) {
     if (!Node::init()) {
         return false;
     }
 
     mOnRestart = onRestart;
 
-    mRoot = CSLoader::createNodeWithVisibleSize("widgets/gameOverOverlay.csb");
+    mRoot = CSLoader::createNodeWithVisibleSize("widgets/overlayNode.csb");
     if (mRoot) {
         addChild(mRoot);
     } else {
@@ -60,7 +61,7 @@ bool GameOverOverlay::initWithCallback(std::function<void()> onRestart) {
                 CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/button.ogg", false, 1.0f, 1.0f, 1.0f);
 
             // Sequence animation
-            if (const auto timeline = CSLoader::createTimeline("widgets/gameOverOverlay.csb")) {
+            if (const auto timeline = CSLoader::createTimeline("widgets/overlayNode.csb")) {
                 mRoot->runAction(timeline);
                 timeline->play("gameOverFadeOut", false);
 
@@ -74,7 +75,7 @@ bool GameOverOverlay::initWithCallback(std::function<void()> onRestart) {
                 list.pushBack(cocos2d::EaseOut::create(cocos2d::FadeOut::create(.2f), .2f));
                 list.pushBack(cocos2d::CallFunc::create([this]() {
                     mIsRestarting = false;
-                    hideGameOver();
+                    hideOverlay();
                 }));
                 runAction(Sequence::create(list));
             } else {
@@ -82,7 +83,7 @@ bool GameOverOverlay::initWithCallback(std::function<void()> onRestart) {
                     mOnRestart();
                 }
                 mIsRestarting = false;
-                hideGameOver();
+                hideOverlay();
             }
         });
     }
@@ -105,20 +106,49 @@ bool GameOverOverlay::initWithCallback(std::function<void()> onRestart) {
     return true;
 }
 
-void GameOverOverlay::showGameOver() {
+void OverlayNode::showOverlay(eOverlayType overlayType) {
     setVisible(true);
     setOpacity(0);
     stopAllActions();
     runAction(cocos2d::FadeIn::create(.2f));
 
+    const auto image = NodeUtils::getNodeByName(mRoot, "image");
+    const auto glow = dynamic_cast<cocos2d::Sprite*>(NodeUtils::getNodeByName(mRoot, "glow"));
+    const auto txtLabel = dynamic_cast<cocos2d::ui::Text*>(NodeUtils::getNodeByName(mRoot, "labelMainTxt"));
+
+    if (image && glow && txtLabel) {
+        // Win overlay
+        if (overlayType == eOverlayType::WIN) {
+                CCLOG("Congratulations!");
+
+                image->setColor(Color3B(cocos2d::Color4B(190, 47, 78, 255)));
+                glow->setColor(Color3B::RED);
+                constexpr  cocos2d::BlendFunc additive = {
+                    cocos2d::backend::BlendFactor::ONE,
+                    cocos2d::backend::BlendFactor::ONE
+                };
+                glow->setBlendFunc(additive);
+                txtLabel->setString("CONGRATS!");
+        } else {
+            image->setColor(Color3B(cocos2d::Color4B(40, 40, 45, 255)));
+            glow->setColor(Color3B::WHITE);
+            constexpr  cocos2d::BlendFunc regular = {
+                cocos2d::backend::BlendFactor::ONE,
+                cocos2d::backend::BlendFactor::ONE_MINUS_SRC_ALPHA
+            };
+            glow->setBlendFunc(regular);
+            txtLabel->setString("GAME OVER!");
+        }
+    }
+
     // Load timeline animation
-    if (const auto timeline = CSLoader::createTimeline("widgets/gameOverOverlay.csb")) {
+    if (const auto timeline = CSLoader::createTimeline("widgets/overlayNode.csb")) {
         mRoot->runAction(timeline);
         timeline->play("gameOverFadeIn", false);
     }
     CCLOG("Timeline start.");
 }
 
-void GameOverOverlay::hideGameOver() {
+void OverlayNode::hideOverlay() {
     setVisible(false);
 }

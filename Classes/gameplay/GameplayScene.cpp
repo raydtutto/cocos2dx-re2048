@@ -4,7 +4,7 @@
 #include "utils/CustomTransitionSlideInL.h"
 #include "MenuScene.h"
 #include "TileWidget.h"
-#include "GameOverOverlay.h"
+#include "OverlayNode.h"
 
 #include "cocostudio/ActionTimeline/CSLoader.h"
 #include "cocostudio/ActionTimeline/CCActionTimeline.h"
@@ -126,13 +126,14 @@ bool GameplayScene::init() {
 
     // Game over overlay
     if (const auto gameOverNode = NodeUtils::getNodeByName(mRoot, "gameOverNode")) {
-        mGameOverOverlay = GameOverOverlay::create([this]() {
+        mOverlayNode = OverlayNode::create([this]() {
             resetBoard();
             reinitBoard();
             mGameOver = false;
+            mUserWon = false;
         });
-        gameOverNode->addChild(mGameOverOverlay);
-        mGameOverOverlay->hideGameOver();
+        gameOverNode->addChild(mOverlayNode);
+        mOverlayNode->hideOverlay();
     }
 
     initListeners();
@@ -140,18 +141,35 @@ bool GameplayScene::init() {
 
     // Debug unsolvable board
 #if defined(DEBUG)
-    const auto debugBtn = CustomButton::create();
-    debugBtn->setTitleText("Debug unsolvable");
-    debugBtn->setTitleFontSize(32);
-    debugBtn->setTitleColor(cocos2d::Color3B::RED);
-    addChild(debugBtn);
+    // Debug unsolvable board
+    const auto debugUnsolvableBtn = CustomButton::create();
+    debugUnsolvableBtn->setTitleText("Debug unsolvable");
+    debugUnsolvableBtn->setTitleFontSize(32);
+    debugUnsolvableBtn->setTitleColor(cocos2d::Color3B::RED);
+    addChild(debugUnsolvableBtn);
 
     const auto size = Director::getInstance()->getWinSize();
-    debugBtn->setPosition({size.width / 2, 100});
+    debugUnsolvableBtn->setPosition({size.width / 2, 100});
 
-    debugBtn->addClickEventListener([&](Ref*) {
+    debugUnsolvableBtn->addClickEventListener([&](Ref*) {
         resetBoard();
-        const auto jsonData = FileUtils::getInstance()->getStringFromFile("devBoard.json");
+        const auto jsonData = FileUtils::getInstance()->getStringFromFile("devUnsolvableBoard.json");
+        UserDefault::getInstance()->setStringForKey("saved_board", jsonData);
+        reinitBoard();
+    });
+
+    // Debug winner board
+    const auto debugWinBtn = CustomButton::create();
+    debugWinBtn->setTitleText("Debug win");
+    debugWinBtn->setTitleFontSize(32);
+    debugWinBtn->setTitleColor(cocos2d::Color3B::RED);
+    addChild(debugWinBtn);
+
+    debugWinBtn->setPosition({size.width / 2, 50});
+
+    debugWinBtn->addClickEventListener([&](Ref*) {
+        resetBoard();
+        const auto jsonData = FileUtils::getInstance()->getStringFromFile("devWinBoard.json");
         UserDefault::getInstance()->setStringForKey("saved_board", jsonData);
         reinitBoard();
     });
@@ -173,8 +191,8 @@ void GameplayScene::update(float dt) {
 void GameplayScene::reinitBoard() {
     mGameOver = false;
 
-    if (mGameOverOverlay) {
-        mGameOverOverlay->hideGameOver();
+    if (mOverlayNode) {
+        mOverlayNode->hideOverlay();
     }
 
     for (int x = 0; x < _gridSizeX; ++x) {
@@ -402,10 +420,21 @@ void GameplayScene::onMove(const eDirection dir) {
     if (movedCells > 0) {
         PLAY("sounds/click_0.ogg")
 
-        auto seq = Sequence::create(DelayTime::create(TileWidget::getTimeDelay()/2), CallFunc::create([this]() {
-            generateTile();
-        }), nullptr);
-        runAction(seq);
+        // Win condition
+        if (numMergedMax == 4096 && !mUserWon) {
+            mUserWon = true;
+            if (mOverlayNode) {
+                mOverlayNode->showOverlay(eOverlayType::WIN);
+            }
+        }
+
+        // Continue generate tile
+        if (!mUserWon) {
+            auto seq = Sequence::create(DelayTime::create(TileWidget::getTimeDelay()/2), CallFunc::create([this]() {
+               generateTile();
+           }), nullptr);
+            runAction(seq);
+        }
     } else {
         PLAY("sounds/move_fail.ogg")
         animateMoveFail(dir);
@@ -446,10 +475,10 @@ void GameplayScene::playSound(const int num) {
 }
 
 void GameplayScene::gameOver() {
-    if (mGameOver || !mGameOverOverlay)
+    if (mGameOver || !mOverlayNode)
         return;
     mGameOver = true;
-    mGameOverOverlay->showGameOver();
+    mOverlayNode->showOverlay(eOverlayType::GAME_OVER);
 }
 
 void GameplayScene::animateMoveFail(const eDirection dir) const {
