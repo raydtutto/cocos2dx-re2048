@@ -16,8 +16,10 @@ public:
             return nullptr;
         }
     }
-    virtual void onPressStateChangedToNormal() override;
-    virtual void onPressStateChangedToPressed() override;
+
+protected:
+    void onPressStateChangedToNormal() override;
+    void onPressStateChangedToPressed() override;
 };
 
 

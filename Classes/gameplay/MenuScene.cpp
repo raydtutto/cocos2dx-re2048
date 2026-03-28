@@ -43,7 +43,7 @@ bool MenuScene::init() {
     }
 
     // Score reset
-    cocos2d::UserDefault::getInstance()->setIntegerForKey("best_score", 0);
+    // cocos2d::UserDefault::getInstance()->setIntegerForKey("best_score", 0);
 
     // Background color
     const auto colorBg = Color4B(40, 40, 45, 255);
