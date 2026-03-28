@@ -180,6 +180,30 @@ bool GameplayScene::init() {
 
 void GameplayScene::onExit() {
     Scene::onExit();
+    bool userWon = false;
+
+    for (int x = 0; x < _gridSizeX; ++x) {
+        for (int y = 0; y < _gridSizeY; ++y) {
+            if (mTileGrid[{x, y}] && mTileGrid[{x, y}]->getNumber() == 4096) {
+                userWon = true;
+                break;
+            }
+        }
+    }
+
+    // If user won, generate a new board
+    if (userWon) {
+        CCLOGERROR("User won, generate a new board.");
+        // Erase board
+        for (int x = 0; x < _gridSizeX; ++x) {
+            for (int y = 0; y < _gridSizeY; ++y) {
+                mTileGrid[{x, y}] = nullptr;
+            }
+        }
+        resetBoard();
+        return;
+    }
+
     saveBoard();
 }
 
