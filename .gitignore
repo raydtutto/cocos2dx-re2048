@@ -2,3 +2,5 @@
 /.idea
 *.udf
 config.json
+
+*.DS_Store
