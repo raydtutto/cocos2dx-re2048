@@ -1,0 +1,67 @@
+<Solution>
+  <PropertyGroup Name="ui" Version="3.10.0.0" Type="CocosStudio" />
+  <SolutionFolder>
+    <Group ctype="ResourceGroup">
+      <RootFolder Name=".">
+        <Folder Name="fonts">
+          <TTF Name="Poppins-Bold.ttf" />
+          <TTF Name="Poppins-ExtraBold.ttf" />
+          <TTF Name="Poppins-Light.ttf" />
+          <TTF Name="Poppins-Regular.ttf" />
+        </Folder>
+        <Folder Name="img">
+          <Folder Name="icons">
+            <Image Name="backward.png" />
+            <Image Name="reset.png" />
+            <Image Name="reset-disabled.png" />
+            <Image Name="sound-off.png" />
+            <Image Name="sound-on.png" />
+          </Folder>
+          <Folder Name="title">
+            <Image Name="title-0bg.png" />
+            <Image Name="title-0num.png" />
+            <Image Name="title-2bg.png" />
+            <Image Name="title-2num.png" />
+            <Image Name="title-4bg.png" />
+            <Image Name="title-4num.png" />
+            <Image Name="title-8bg.png" />
+            <Image Name="title-8num.png" />
+          </Folder>
+          <Image Name="buttonBorder.png" />
+          <Image Name="glow.png" />
+          <Image Name="tile0.png" />
+          <Image Name="tile1024.png" />
+          <Image Name="tile128.png" />
+          <Image Name="tile16.png" />
+          <Image Name="tile2.png" />
+          <Image Name="tile2048.png" />
+          <Image Name="tile256.png" />
+          <Image Name="tile32.png" />
+          <Image Name="tile4.png" />
+          <Image Name="tile4096.png" />
+          <Image Name="tile512.png" />
+          <Image Name="tile64.png" />
+          <Image Name="tile8.png" />
+          <Image Name="tileBG.png" />
+          <Image Name="title.png" />
+        </Folder>
+        <Folder Name="sounds">
+          <File Name="button.ogg" />
+          <File Name="click_0.ogg" />
+          <File Name="click_1.ogg" />
+          <File Name="click_2.ogg" />
+          <File Name="click_3.ogg" />
+          <File Name="click_4.ogg" />
+          <File Name="ding_deep.ogg" />
+          <File Name="move_fail.ogg" />
+        </Folder>
+        <Folder Name="widgets">
+          <Project Name="overlayNode.csd" Type="Layer" />
+          <Project Name="gameplayScene.csd" Type="Layer" />
+          <Project Name="menuScene.csd" Type="Layer" />
+          <Project Name="tile.csd" Type="Layer" />
+        </Folder>
+      </RootFolder>
+    </Group>
+  </SolutionFolder>
+</Solution>
