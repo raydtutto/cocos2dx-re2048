@@ -34,7 +34,7 @@
 
 using namespace ax;
 
-static ax::Size designResolutionSize = ax::Size(720, 1280);
+static ax::Size designResolutionSize = ax::Size(640, 1136);
 
 AppDelegate::AppDelegate() {}
 
@@ -63,6 +63,9 @@ bool AppDelegate::applicationDidFinishLaunching()
     (AX_TARGET_PLATFORM == AX_PLATFORM_LINUX)
         renderView = RenderViewImpl::createWithRect(
             "axmol-re2048", ax::Rect(0, 0, designResolutionSize.width, designResolutionSize.height));
+#elif (AX_TARGET_PLATFORM == AX_PLATFORM_EMSCRIPTEN)
+        renderView = RenderViewImpl::createWithRect(
+                "axmol-re2048", ax::Rect(0, 0, designResolutionSize.width, designResolutionSize.height));
 #else
         renderView = RenderViewImpl::create("axmol-re2048");
 #endif
@@ -70,7 +73,7 @@ bool AppDelegate::applicationDidFinishLaunching()
     }
 
     // turn on display FPS
-    director->setStatsDisplay(true);
+    director->setStatsDisplay(false);
 
     // set FPS. the default value is 1.0/60 if you don't call this
     director->setAnimationInterval(1.0f / 60);
