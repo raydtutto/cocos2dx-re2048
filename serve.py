@@ -6,7 +6,7 @@ import sys
 
 # --- Configuration ---
 PORT = 8000
-DIRECTORY = "build_wasm/bin/cocos2dx-re2048"
+DIRECTORY = "build_wasm/bin/2048-game"
 
 class MyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):

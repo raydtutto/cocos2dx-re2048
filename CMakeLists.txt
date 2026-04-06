@@ -25,7 +25,7 @@
 
 cmake_minimum_required(VERSION 3.22...4.1)
 
-set(APP_NAME cocos2dx-re2048)
+set(APP_NAME 2048-game)
 
 project(${APP_NAME})
 

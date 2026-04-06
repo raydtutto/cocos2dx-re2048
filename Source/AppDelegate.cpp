@@ -62,12 +62,12 @@ bool AppDelegate::applicationDidFinishLaunching()
 #if (AX_TARGET_PLATFORM == AX_PLATFORM_WIN32) || (AX_TARGET_PLATFORM == AX_PLATFORM_MAC) || \
     (AX_TARGET_PLATFORM == AX_PLATFORM_LINUX)
         renderView = RenderViewImpl::createWithRect(
-            "axmol-re2048", ax::Rect(0, 0, designResolutionSize.width, designResolutionSize.height));
+            "2048-game", ax::Rect(0, 0, designResolutionSize.width, designResolutionSize.height));
 #elif (AX_TARGET_PLATFORM == AX_PLATFORM_EMSCRIPTEN)
         renderView = RenderViewImpl::createWithRect(
-                "axmol-re2048", ax::Rect(0, 0, designResolutionSize.width, designResolutionSize.height));
+                "2048-game", ax::Rect(0, 0, designResolutionSize.width, designResolutionSize.height));
 #else
-        renderView = RenderViewImpl::create("axmol-re2048");
+        renderView = RenderViewImpl::create("2048-game");
 #endif
         director->setRenderView(renderView);
     }
